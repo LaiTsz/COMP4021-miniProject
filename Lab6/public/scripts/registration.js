@@ -13,40 +13,45 @@ const Registration = (function() {
         //
         // A. Preparing the user data
         //
- 
-        const json = JSON.stringify({username, avatar, name, password})
+        
+        const json = JSON.stringify({ username, avatar, name, password});
+
+
         //
         // B. Sending the AJAX request to the server
         //
 
-        fetch("/register", { 
-            method:"POST",
-            headers: { "Content-Type": "application/json"},
+        fetch("/register", {
+            method: "POST",
+            headers: {"Content-Type": "application/json" },
             body: json
-         })
-            .then((res) => res.json())
-            .then((json) => { 
+        })
+        .then((res) => res.json() )
+        .then((json) => {
+
+            if (json.status == "error"){
+                if (onError) onError(json.error);
+            }
+            else {
+                if (onSuccess) onSuccess();
+            }
+
+            // console.log("Successful!");
+        })
+        .catch((err) => {
+            console.log("Error!");
+        });
+        
         //
         // F. Processing any error returned by the server
         //
-                if(json.status == "error"){
-                    if (onError) onError(json.error);
-                }else{
+
         //
         // J. Handling the success response from the server
         //
-                    if(onSuccess) onSuccess();
-                }
-
-            })
-            .catch((err) => {
-                console.log("Error!");
-            });
-       
-
  
         // Delete when appropriate
-        if (onError) onError("This function is not yet implemented.");
+        // if (onError) onError("This function is not yet implemented.");
     };
 
     return { register };

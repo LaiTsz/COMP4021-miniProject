@@ -59,9 +59,16 @@ const Socket = (function() {
             // Add the message to the chatroom
             ChatPanel.addMessage(message);
         });
-        socket.on("add typing",(name)=>{
-            ChatPanel.changeTyping(name);
-        })
+
+        socket.on("other type", (username) => {
+            // console.log(username);
+            ChatPanel.changetext(username);
+        });
+
+
+
+
+
     };
 
     // This function disconnects the socket from the server
@@ -76,9 +83,10 @@ const Socket = (function() {
             socket.emit("post message", content);
         }
     };
-    const typingMessage = function(){
-        socket.emit("add typing");
-    }
-    
-    return { getSocket, connect, disconnect, postMessage,typingMessage};
+
+    const type = function() {
+            socket.emit("who type");
+    };
+
+    return { getSocket, connect, disconnect, postMessage, type };
 })();

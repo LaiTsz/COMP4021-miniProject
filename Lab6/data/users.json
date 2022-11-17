@@ -1,17 +1,32 @@
 {
- "tony": {
-  "avatar": "Owl",
-  "name": "Tony Lee",
-  "password": "$2b$10$Yxb2fSgA5RFn9Oz9TxjLLuve/GiPXCs2DWVFhyFDr4qz39qglwp8e"
- },
- "may": {
-  "avatar": "Rabbit",
-  "name": "May Wong",
-  "password": "$2b$10$gLc3Ri9W6P650EKKbexw6uvirV8Bar7gmvAtMcoMiPiR3rsY50GVu"
- },
- "Lai": {
-  "avatar": "Hamster",
-  "name": "lai",
-  "password": "$2b$10$DhlSdzKhns.n/.T4jG5oDuCzPUyQWyLRbG/t9JNYad3o3lFrd2QxS"
- }
+  "tony": {
+    "avatar": "Owl",
+    "name": "Tony Lee",
+    "password": "$2b$10$Yxb2fSgA5RFn9Oz9TxjLLuve/GiPXCs2DWVFhyFDr4qz39qglwp8e"
+  },
+  "may": {
+    "avatar": "Rabbit",
+    "name": "May Wong",
+    "password": "$2b$10$gLc3Ri9W6P650EKKbexw6uvirV8Bar7gmvAtMcoMiPiR3rsY50GVu"
+  },
+  "steven": {
+    "avatar": "Kangaroo",
+    "name": "Steven Wong",
+    "password": "$2b$10$LVffDCeuqL6ZwHL0GO8cX.oUdNB639FRMRp4L5YZzjowOvQSxkNzO"
+  },
+  "ken": {
+    "avatar": "Bird",
+    "name": "Ken Wong",
+    "password": "$2b$10$yArna/LJnPneoBXNpH.vbOII1dIPxxvNOyv5zN57tapFG1pG4ktwm"
+  },
+  "jason": {
+    "avatar": "Dolphin",
+    "name": "Jason Choi",
+    "password": "$2b$10$ouE5Fhvr8mrekq2FkOSYCegyJW1QZmlqVlMHqJxwk93P8TED/3K4a"
+  },
+  "ling_11": {
+    "avatar": "Kangaroo",
+    "name": "Ling Wong",
+    "password": "$2b$10$4Jp.BUdinXAg6/824zi9/.gQNaQJAEUWRWZfWkW1m1xsu/QvLEXwO"
+  }
 }

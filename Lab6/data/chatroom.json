@@ -1,29 +1,20 @@
 [
- {
-  "user": {
-   "username": "tony",
-   "avatar": "Owl",
-   "name": "Tony Lee"
+  {
+    "user": {
+      "username": "tony",
+      "avatar": "Owl",
+      "name": "Tony Lee"
+    },
+    "datetime": "2022-01-01T01:00:00.000Z",
+    "content": "Hi, welcome to the chatroom!"
   },
-  "datetime": "2022-01-01T01:00:00.000Z",
-  "content": "Hi, welcome to the chatroom!"
- },
- {
-  "user": {
-   "username": "tony",
-   "avatar": "Owl",
-   "name": "Tony Lee"
-  },
-  "datatime": "2022-11-14T08:03:57.109Z",
-  "content": "Hi"
- },
- {
-  "user": {
-   "username": "tony",
-   "avatar": "Owl",
-   "name": "Tony Lee"
-  },
-  "datatime": "2022-11-14T13:54:31.373Z",
-  "content": "asdsasd"
- }
+  {
+    "user": {
+      "username": "steven",
+      "avatar": "Kangaroo",
+      "name": "Steven Wong"
+    },
+    "datetime": "2022-11-10T22:28:59.797Z",
+    "content": "Hello!"
+  }
 ]

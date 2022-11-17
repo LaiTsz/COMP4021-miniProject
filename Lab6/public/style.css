@@ -198,6 +198,7 @@ button.icon:active {
     padding: 0;
 }
 #chat-area {
+    /* height: 100%; */
     height: 100%;
     align-items: flex-start;
     justify-content: start;
@@ -205,6 +206,19 @@ button.icon:active {
     overflow-y: auto;
     padding: 10px;
 }
+
+
+#typing {
+
+    height: 20px;
+    align-items: flex-start;
+    justify-content: start;
+    font-size: 90%;
+    padding: 10px;
+    font-style: italic;
+}
+
+
 .chat-message-panel {
     align-items: flex-start;
     padding: 0;
@@ -249,7 +263,4 @@ button.icon:active {
 #edit-user-form {
     width: 270px;
     align-self: stretch;
-}
-#typing_announcement{
-    font-style: italic;
 }

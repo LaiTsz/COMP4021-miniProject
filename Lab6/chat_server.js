@@ -3,7 +3,6 @@ const express = require("express");
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const session = require("express-session");
-const { json } = require("express");
 
 // Create the Express app
 const app = express();
@@ -33,53 +32,47 @@ function containWordCharsOnly(text) {
 app.post("/register", (req, res) => {
     // Get the JSON data from the body
     const { username, avatar, name, password } = req.body;
-    
 
     //
     // D. Reading the users.json file
     //
-    const users = JSON.parse(fs.readFileSync("data/users.json"));
-
+    const users= JSON.parse(fs.readFileSync("data/users.json"));
     //
     // E. Checking for the user data correctness
     //
-    if(!username ||!avatar || !name || !password){
+    if (!username || !avatar || !name || !password){
         res.json({  status: "error",
-                    error: "Username/avatar/name/password cannot be empty."});
+                    error: "Username/avatar/name/password cannot be empty." });
         return;
     }
-    //If the username contains invalid characters, return an error
-    if(!containWordCharsOnly(username)){
+
+    if (!containWordCharsOnly(username)){
         res.json({  status: "error",
-                    error: "Username can only contain underscores, letters or numbers."});
+        error: "Username can only contain underscores, letters or numbers." });
         return;
     }
-    //If username exists, return an error
-    if(username in users){
+    if (username in users){
         res.json({  status: "error",
-                    error: "Username has already been used"});
+        error: "Username has already been used." });
         return;
     }
+
     //
     // G. Adding the new user account
     //
-    //Hash the password 
-    const hash = bcrypt.hashSync(password, 10)
+    const hash = bcrypt.hashSync(password, 10);
 
-    //Add the user in the record
-    users[username] = {avatar, name, password: hash}
-
+    users[username] = {avatar, name, password: hash};
     //
     // H. Saving the users.json file
     //
-    //Save the file
-    fs.writeFileSync("data/users.json", JSON.stringify(users,null," "));
-
+    fs.writeFileSync("data/users.json", JSON.stringify(users, null, "  "));
     //
     // I. Sending a success response to the browser
     //
-    res.json({status: "success"})
-
+    res.json({ status: "success"});
+    // Delete when appropriate
+    // res.json({ status: "error", error: "This endpoint is not yet implemented." });
 });
 
 // Handle the /signin endpoint
@@ -90,23 +83,42 @@ app.post("/signin", (req, res) => {
     //
     // D. Reading the users.json file
     //
-    const users = JSON.parse(fs.readFileSync("data/users.json"));
+    const users= JSON.parse(fs.readFileSync("data/users.json"));
     //
     // E. Checking for username/password
     //
-        user = users[username];
-        const hashedPassword = user.password
-        if (!bcrypt.compareSync(password, hashedPassword)){
-            res.json({ status: "error",
-            error: "Username or password is incorrect"});
-            return;}
+    
+    if (username in users){
+        
+        if (!bcrypt.compareSync(password, users[username].password)) {
+            res.json({  status: "error",
+            error: "Incorrect username/password." });
+            return;
+        };
+    }
+    else{
+        res.json({  status: "error",
+        error: "Incorrect username/password." });
+        return;
+    }
+
     //
     // G. Sending a success response with the user account
-    else{
-        req.session.user = {username, avatar: user.avatar, name: user.name};
-        res.json({status:"success", user:{username, avatar: user.avatar, name: user.name}});
+    //
 
-    }
+
+    //  req.session.user = users[username] ;
+    //  res.json({ status: "success", user: users[username] });
+
+
+    //  req.session.user = { username, avatar: users.avatar, name: users.name };
+    //  res.json({ status: "success", user: { username, avatar: users.avatar, name: users.name } });
+
+     req.session.user = { username, avatar: users[username].avatar, name: users[username].name };
+     res.json({ status: "success", user: { username, avatar: users[username].avatar, name: users[username].name } });
+ 
+    // Delete when appropriate
+    // res.json({ status: "error", error: "This endpoint is not yet implemented." });
 });
 
 // Handle the /validate endpoint
@@ -116,15 +128,17 @@ app.get("/validate", (req, res) => {
     // B. Getting req.session.user
     //
     if (!req.session.user){
-        res.json({status: "error",error: "You have not signed in."});
+        res.json({ status: "error", error: "You have not signed in." });
         return;
     }
 
     //
     // D. Sending a success response with the user account
     //
- 
     res.json({ status: "success", user: req.session.user });
+
+    // Delete when appropriate
+    // res.json({ status: "error", error: "This endpoint is not yet implemented." });
 });
 
 // Handle the /signout endpoint
@@ -133,88 +147,90 @@ app.get("/signout", (req, res) => {
     //
     // Deleting req.session.user
     //
-    req.session.user=null
+    delete req.session.user;
     //
     // Sending a success response
     //
-    res.json({ status: "success"});
+    res.json({ status: "success" });
+ 
+    // Delete when appropriate
+    // res.json({ status: "error", error: "This endpoint is not yet implemented." });
 });
 
 
 //
 // ***** Please insert your Lab 6 code here *****
 //
+
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const httpServer = createServer( app );
 const io = new Server(httpServer);
 
-//A JavaScript object storing the online users
 const onlineUsers = {}
 
-//Handle the web socket connection
-io.on("connection",(socket)=>{
-    //Add a new user to the online user list 
-    if(socket.request.session.user){
-        const {username, avatar, name} = socket.request.session.user;
-        onlineUsers[username]= {avatar,name};
-        console.log(onlineUsers);
+io.on("connection", (socket) =>{
+    if (socket.request.session.user) {
+        const { username, avatar, name } = socket.request.session.user;
+        onlineUsers[username] = { avatar, name};
+        // console.log(onlineUsers);
 
-        //Broadcast the signed-in user
-        io.emit("add user",JSON.stringify(socket.request.session.user));
+        io.emit("add user", JSON.stringify(socket.request.session.user));
     }
 
-    socket.on("disconnect",()=>{
-        if(socket.request.session.user){
-            const {username} = socket.request.session.user;
-            if(onlineUsers[username]) delete onlineUsers[username];
-            console.log(onlineUsers);
-
-            //Broadcast the signed-in user
-            io.emit("remove user",JSON.stringify(socket.request.session.user));
-            }
-    });
-
-    socket.on("get users",()=>{
-        //Send the online users to the browser
-        socket.emit("users",JSON.stringify(onlineUsers));
-    });
-    socket.on("get messages",()=>{
-        //Send the chatroom messages to the browser
-        const message = JSON.parse(fs.readFileSync("data/chatroom.json"))
-        socket.emit("messages",JSON.stringify(message))
-    })
-    socket.on("post message",(content) =>{
-       
-        const user = socket.request.session.user;
-        const data = new Date();
-        const message={
-            user: user,
-            datatime: data,
-            content: content
+    socket.on("disconnect", () => {
+        if (socket.request.session.user){
+            const { username } = socket.request.session.user;
+                if (onlineUsers[username]) delete onlineUsers[username];
+                // console.log(onlineUsers);
+            
+            io.emit("remove user", JSON.stringify(socket.request.session.user));
         }
-        const chatroom = JSON.parse(fs.readFileSync("data/chatroom.json"));
-        chatroom.push(message);
-        fs.writeFileSync("data/chatroom.json", JSON.stringify(chatroom,null," "));
-        io.emit("add message",JSON.stringify(message));
-    })
-    socket.on("get users",()=>{
-        //Send the online users to the browser
-        socket.emit("users",JSON.stringify(onlineUsers));
     });
-    socket.on("add typing",()=>{
-        const user = socket.request.session.user;
-        console.log(user);
-        const name = user.name;
-        console.log(name)
-        io.emit("add typing",name);
-    })
-    
-})
-//use the session in the Socket.IO server
+
+    socket.on("get users", () => {
+        socket.emit("users", JSON.stringify(onlineUsers));
+    });
+
+    socket.on("get messages", () => {
+        const messages = JSON.parse(fs.readFileSync("data/chatroom.json"));
+        socket.emit("messages", JSON.stringify(messages));
+    });
+
+    socket.on("post message", (content) => {
+
+        // console.log("hi");
+        const chatroom = JSON.parse(fs.readFileSync("data/chatroom.json"));
+
+        const { username, avatar, name } = socket.request.session.user;
+
+        var temp = {user: {username, avatar, name}, datetime: new Date(), content: content};
+
+        chatroom.push(temp);
+
+        //
+        // H. Saving the users.json file
+        //
+        fs.writeFileSync("data/chatroom.json", JSON.stringify(chatroom, null, "  "));
+
+        io.emit("add message", JSON.stringify(temp));
+
+    });
+
+    socket.on("who type", () => {
+        const { username, avatar, name } = socket.request.session.user;
+        io.emit("other type", String(name));
+    });
+
+
+
+});
+
+
 io.use((socket, next) => {
     chatSession(socket.request, {}, next);
 });
+
 
 // Use a web server to listen at port 8000
 httpServer.listen(8000, () => {

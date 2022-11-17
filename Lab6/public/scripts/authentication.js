@@ -19,31 +19,50 @@ const Authentication = (function() {
         //
         // A. Preparing the user data
         //
-        const json = JSON.stringify({username, password})
+        const json = JSON.stringify({ username, password});
+ 
         //
         // B. Sending the AJAX request to the server
         //
 
-        fetch("/signin", { 
-            method:"POST",
-            headers: { "Content-Type": "application/json"},
+        fetch("/signin", {
+            method: "POST",
+            headers: {"Content-Type": "application/json" },
             body: json
-         })
-            .then((res) => res.json())
-            .then((json) => {
-        //        
-        // H. Handling the success response from the server
-        //
-            if(json.status == "success") {
-            user = json.user
-            onSuccess();
+        })
+        .then((res) => res.json() )
+        .then((json) => {
+
+            if (json.status == "success") {
+                user = json.user;
+        
+                /* Run the onSuccess() callback */
+                if (onSuccess) onSuccess();
             }
+
+                else if (onError) onError(json.error);
+
+
+            // else {
+            //     if (onSuccess) onSuccess();
+            // }
+
+            // console.log("Successful!");
+        })
+        .catch((err) => {
+            console.log("Error!");
+        });
+
         //
         // F. Processing any error returned by the server
         //
-            else if(onError) onError(json.error);
-            
-        });
+
+        //
+        // H. Handling the success response from the server
+        //
+
+        // Delete when appropriate
+        //if (onError) onError("This function is not yet implemented.");
     };
 
     // This function sends a validate request to the server
@@ -57,28 +76,32 @@ const Authentication = (function() {
         // A. Sending the AJAX request to the server
         //
         fetch("/validate")
-                .then((res) => res.json())
-                .then((json) =>{
-                //
-                // E. Handling the success response from the server
-                //
-                if(json.status == "success"){
-                    //Set the user information
-                    user = json.user;
+        .then((res) => res.json() )
+        .then((json) => {
+            if (json.status == "success") {
+                user = json.user;
+        
+                /* Run the onSuccess() callback */
+                if (onSuccess) onSuccess();
+            }
 
-                    if(onSuccess) onSuccess();
-                }
+                else if (onError) onError(json.error);
+
+        })
+        .catch((err) => {
+            console.log(err);
+            if (onError) onError(err);
+        });
         //
         // C. Processing any error returned by the server
         //
-                else if(onError) onError(json.error);
-        })
-        .catch((err)=>{
-            console.log(err);
-            if(onError) onError(err);
-        })
 
-    
+        //
+        // E. Handling the success response from the server
+        //
+
+        // Delete when appropriate
+        // if (onError) onError("This function is not yet implemented.");
     };
 
     // This function sends a sign-out request to the server
@@ -88,14 +111,34 @@ const Authentication = (function() {
     //                 request fails in this form `onError(error)`
     const signout = function(onSuccess, onError) {
 
+        
         fetch("/signout")
-        .then((res) => res.json())
-        .then((json) =>{
-            if(json.status == "success"){
-                //Set the user information
-                if(onSuccess) onSuccess();
+        .then((res) => res.json() )
+        .then((json) => {
+
+            if (json.status == "success") {
+                user = null;
+        
+                /* Run the onSuccess() callback */
+                if (onSuccess) onSuccess();
             }
+
+                else if (onError) onError(json.error);
+
+
+            // else {
+            //     if (onSuccess) onSuccess();
+            // }
+
+            // console.log("Successful!");
         })
+        .catch((err) => {
+            console.log("Error!");
+        });
+
+
+        // Delete when appropriate
+        // if (onError) onError("This function is not yet implemented.");
     };
 
     return { getUser, signin, validate, signout };

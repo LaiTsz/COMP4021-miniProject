@@ -177,19 +177,35 @@ const OnlineUsersPanel = (function() {
 const ChatPanel = (function() {
 	// This stores the chat area
     let chatArea = null;
-    let timer = 0;
+    let timerid = null;
+    var myself = 0;
+    const changetext = function(namee) {
+
+        if(myself == 1)
+            myself = 0;
+        else{
+            document.getElementById("typing").innerHTML = namee + " is typing...";
+            clearTimeout(timerid);
+            timerid = setTimeout(del, 3000);
+        }
+    }
+
+    const del = function() {
+        document.getElementById("typing").innerHTML = "";
+    }
 
     // This function initializes the UI
     const initialize = function() {
 		// Set up the chat area
 		chatArea = $("#chat-area");
-        //show who is typing
-        $("#chat-input-form").keydown(function(){
-            console.log("when keydown call the socket function typingMessage");
-            Socket.typingMessage();
-            if(timer !=0 ){
-                console.log("reset timer")
-                clearTimeout(timer);
+
+        $("#typing").text("");
+
+        $("#chat-input-form").on("keydown", function(e) {
+            // The player jumps if the spacebar key is down
+            if (e.keyCode != 13){
+                Socket.type();
+                myself = 1;
             }
         });
 
@@ -222,6 +238,7 @@ const ChatPanel = (function() {
 
     // This function adds a new message at the end of the chatroom
     const addMessage = function(message) {
+
 		const datetime = new Date(message.datetime);
 		const datetimeString = datetime.toLocaleDateString() + " " +
 							   datetime.toLocaleTimeString();
@@ -236,14 +253,8 @@ const ChatPanel = (function() {
 		);
 		chatArea.scrollTop(chatArea[0].scrollHeight);
     };
-    const changeTyping= function(name){
-        if(name != $(".user-name").first().text()){
-            $("#typing_announcement").text(name+" is typing...");
-            timer= setTimeout(()=>$("#typing_announcement").text(""),3000)
-        }
-    }
 
-    return { initialize, update, addMessage,changeTyping};
+    return { initialize, update, addMessage, changetext };
 })();
 
 const UI = (function() {
