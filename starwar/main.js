@@ -5,35 +5,35 @@
     // Socket value
 
 
-        function passValue(){
-            for(let i = 0;i<10;i++){
-                if(i<1){
-                    $("#player2-score").text(scorePlayerOne);
-                    playerClone.setXY(player.getX(),player.getY());
-                    coinClone.setXY(coin.getX(),coin.getY());
-                }
-                if(i<4){
-                    if(i<2){
-                        heartsClone[i].setXY(hearts[i].getX()+655,hearts[i].getY());
+        function passValue(now){
+            if(now != 404)
+                monster[nextMonster].setColor(monsters[nextMonster].getColor());
+            else{
+                for(let i = 0;i<10;i++){
+                    if(i<1){
+                        $("#player2-score").text(scorePlayerOne);
+                        playerClone.setXY(player.getX(),player.getY());
+                        coinClone.setXY(coin.getX(),coin.getY());
                     }
-        
+                    if(i<4){
+                        if(i<2){
+                            heartsClone[i].setXY(hearts[i].getX()+655,hearts[i].getY());
+                        }
+            
+                    }
+                    if(i<8){
+                        bulletsClone[i].setXY(bullets[i].getX(),bullets[i].getY());
+                    }
+                    // if(monsters[i].getColor()!="black"){
+                    //     monster[i].setColor(monsters[i].getColor());
+                    // }
+
+                    //     //console.log(monsters[i].getColor());
+                        
+
+                    //     monster[i].update(now);
+                        monster[i].setXY(monsters[i].getX(),monsters[i].getY());
                 }
-                if(i<8){
-                    bulletsClone[i].setXY(bullets[i].getX(),bullets[i].getY());
-                }
-                if(monsters[i].getColor()=="purple" ||
-                monsters[i].getColor()=="red" ||
-                monsters[i].getColor()=="green" ||
-                monsters[i].getColor()=="yellow" ||
-                monsters[i].getColor()=="blue" ||
-                monsters[i].getColor()=="orange" ||
-                monsters[i].getColor()=="skyblue" ||
-                monsters[i].getColor()=="gray" ){
-                    //console.log(monsters[i].getColor());
-                    monster[i].setColor(monsters[i].getColor());
-                }
-                    
-                    monster[i].setXY(monsters[i].getX(),monsters[i].getY());
             }
         }
 
@@ -88,17 +88,17 @@
         /* Create the sprites in the game */
         const player = Player(context, 180, 400, gameAreaOfPlayer); // The player
         const gem = Gem(context, 427, 350, "green");        // The gem
-        const monster = [Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"yellow" ),
-                        Monster(right_context,-400,100,"red" )];
+        const monster = [Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett),
+                        Monster(right_context,-400,100,"green",gameAreabullett)];
         const coin = Coin(context,-400,-400,"coin");
 
         const hearts = [
@@ -203,6 +203,8 @@
 
     function delayOfSpawn(now){
         monsters[nextMonster].randomize(gameArea);
+        passValue(nextMonster);
+        
         nextMonster += 1;
         if(nextMonster == 10)
             nextMonster = 0;
@@ -269,6 +271,7 @@
                     bullets[i].move(2);
                 }
                 monsters[i].update(now);
+                monster[i].update(now);
             }
 
             // for(let i = 0;i<10;i++){
@@ -299,7 +302,7 @@
                     
             //         monster[i].setXY(monsters[i].getX(),monsters[i].getY());
             // }
-            passValue();
+            passValue(404);
 
 
             for(let i=0;i<10;i++){ //update clone
@@ -482,10 +485,10 @@
                 /* Handle the key down */
                 switch (event.keyCode) {
                     
-                    case 37: player.move(1); break;
-                    case 38: player.move(2); break;
-                    case 39: player.move(3); break;
-                    case 40: player.move(4); break;
+                    case 37: player.move(1); playerClone.move(1);break;
+                    case 38: player.move(2); playerClone.move(2);break;
+                    case 39: player.move(3); playerClone.move(3);break;
+                    case 40: player.move(4); playerClone.move(4);break;
                     case 32: player.speedUp(); 
                     for(let i = 0;i<8;i++){
                         bullets[i].speedUp();
@@ -503,10 +506,10 @@
                 /* TODO */
                 /* Handle the key up */
                 switch (event.keyCode) {
-                    case 37: player.stop(1); break;
-                    case 38: player.stop(2); break;
-                    case 39: player.stop(3); break;
-                    case 40: player.stop(4); break;
+                    case 37: player.stop(1); playerClone.stop(1);break;
+                    case 38: player.stop(2); playerClone.stop(2);break;
+                    case 39: player.stop(3); playerClone.stop(3);break;
+                    case 40: player.stop(4); playerClone.stop(4);break;
                     case 32: player.slowDown();
                     for(let i = 0;i<8;i++){
                         bullets[i].slowDown();

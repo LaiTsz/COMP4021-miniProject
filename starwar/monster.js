@@ -28,7 +28,7 @@ const Monster = function(ctx, x, y, color, gameArea) {
           .useSheet("monster_sprite.png");
 
     let speed = 230;
-    let currentcolor;
+    let currentcolor = "black";
     // This is the birth time of the gem for finding its age.
     let birthTime = performance.now();
 
@@ -40,6 +40,19 @@ const Monster = function(ctx, x, y, color, gameArea) {
         birthTime = performance.now();
         currentcolor = color;
     };
+
+    const setSequences = function(x){
+        switch (x) {
+            case 1: sprite.setSequence(sequences.green); break;
+            case 2: sprite.setSequence(sequences.red);  break;
+            case 3: sprite.setSequence(sequences.yellow);  break;
+            case 4: sprite.setSequence(sequences.purple);  break;
+            case 5: sprite.setSequence(sequences.blue);  break;
+            case 6: sprite.setSequence(sequences.orange);  break;
+            case 7: sprite.setSequence(sequences.skyblue);  break;
+            case 8: sprite.setSequence(sequences.gray);  break;
+        };
+    }
 
     const getColor = function(){
         return currentcolor;
@@ -110,6 +123,7 @@ const Monster = function(ctx, x, y, color, gameArea) {
         resetMonster: resetMonster,
         getColor: getColor,
         getX: sprite.getX,
-        getY: sprite.getY
+        getY: sprite.getY,
+        setSequences: setSequences
     };
 };
