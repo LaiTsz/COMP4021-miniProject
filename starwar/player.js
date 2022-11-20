@@ -71,10 +71,10 @@ const Player = function(ctx, x, y, gameArea) {
     const move = function(dir) {
         if (dir >= 1 && dir <= 4 && dir != direction) {
             switch (dir) {
-                case 1: sprite.setSequence(sequences.moveLeft); speed = 150; break;
-                case 2: sprite.setSequence(sequences.moveUp); speed = 180; break;
-                case 3: sprite.setSequence(sequences.moveRight); speed = 150; break;
-                case 4: sprite.setSequence(sequences.moveDown); speed = 180; break;
+                case 1: sprite.setSequence(sequences.moveLeft);  break;
+                case 2: sprite.setSequence(sequences.moveUp);  break;
+                case 3: sprite.setSequence(sequences.moveRight);  break;
+                case 4: sprite.setSequence(sequences.moveDown);  break;
             }
             direction = dir;
         }

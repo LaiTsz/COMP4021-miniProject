@@ -367,17 +367,7 @@
                     }
             
             for(let i = 0;i < 10;i++){
-                if (monstersboxs[i].isPointInBox(xx-25,yy)) {
-                        collectedGems++;
-                        sounds.damage.currentTime = 0;
-                        sounds.background.pause();
-                        sounds.damage.play();
-                        sounds.background.play();
-                        monsters[i].resetMonster();
-                        monster[i].resetMonster();
-                        life_player1--;
-                    }
-                if (monstersboxs[i].isPointInBox(xx+25,yy)) {
+                if (monstersboxs[i].isPointInBox(xx-25,yy) || monstersboxs[i].isPointInBox(xx+25,yy)) {
                         collectedGems++;
                         sounds.damage.currentTime = 0;
                         sounds.background.pause();
@@ -403,7 +393,7 @@
             }
             if(life_player1 == 1)
                 hearts[1].resetHeart();
-            if(life_player1 == 0) {
+            if(life_player1 <= 0) {
                 endGame = 1;
                 heartsClone[0].setXY(hearts[0].getX()+655,hearts[0].getY());
                 hearts[0].resetHeart();
