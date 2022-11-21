@@ -370,7 +370,7 @@
                     }
             
             for(let i = 0;i < 10;i++){
-                if (monstersboxs[i].isPointInBox(xx-25,yy) || monstersboxs[i].isPointInBox(xx+25,yy)) {
+                if ((monstersboxs[i].isPointInBox(xx-25,yy) || monstersboxs[i].isPointInBox(xx+25,yy)) && life_player1 != 0) {
                         collectedGems++;
                         sounds.damage.currentTime = 0;
                         sounds.background.pause();
