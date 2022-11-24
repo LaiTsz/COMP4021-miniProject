@@ -1,5 +1,4 @@
 const express = require("express");
-
 const bcrypt = require("bcrypt");
 const fs = require("fs");
 const session = require("express-session");
@@ -105,11 +104,8 @@ app.post("/signin", (req, res) => {
     //
     // G. Sending a success response with the user account
     //
-
-
     //  req.session.user = users[username] ;
     //  res.json({ status: "success", user: users[username] });
-
 
     //  req.session.user = { username, avatar: users.avatar, name: users.name };
     //  res.json({ status: "success", user: { username, avatar: users.avatar, name: users.name } });
@@ -166,64 +162,24 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const httpServer = createServer( app );
 const io = new Server(httpServer);
+let players = {};
 
-const onlineUsers = {}
 
 io.on("connection", (socket) =>{
-    if (socket.request.session.user) {
-        const { username, avatar, name } = socket.request.session.user;
-        onlineUsers[username] = { avatar, name};
-        // console.log(onlineUsers);
-
-        io.emit("add user", JSON.stringify(socket.request.session.user));
-    }
-
+    
+    /*socket.on('newPlayer',data =>{
+        console.log("New client connected, with id: "+socket.id);
+        players[socket.id] = data;
+        console.log("Starting position: "+players[socket.id].x+" - "+players[socket.id].y);
+        console.log("players dictionary: ", players);
+        io.emit('updatePlayers', players);
+    })
     socket.on("disconnect", () => {
-        if (socket.request.session.user){
-            const { username } = socket.request.session.user;
-                if (onlineUsers[username]) delete onlineUsers[username];
-                // console.log(onlineUsers);
-            
-            io.emit("remove user", JSON.stringify(socket.request.session.user));
-        }
+        delete players[socket.id];
+        io.emit('updatePlayers', players);
     });
-
-    socket.on("get users", () => {
-        socket.emit("users", JSON.stringify(onlineUsers));
-    });
-
-    socket.on("get messages", () => {
-        const messages = JSON.parse(fs.readFileSync("data/chatroom.json"));
-        socket.emit("messages", JSON.stringify(messages));
-    });
-
-    socket.on("post message", (content) => {
-
-        // console.log("hi");
-        const chatroom = JSON.parse(fs.readFileSync("data/chatroom.json"));
-
-        const { username, avatar, name } = socket.request.session.user;
-
-        var temp = {user: {username, avatar, name}, datetime: new Date(), content: content};
-
-        chatroom.push(temp);
-
-        //
-        // H. Saving the users.json file
-        //
-        fs.writeFileSync("data/chatroom.json", JSON.stringify(chatroom, null, "  "));
-
-        io.emit("add message", JSON.stringify(temp));
-
-    });
-
-    socket.on("who type", () => {
-        const { username, avatar, name } = socket.request.session.user;
-        io.emit("other type", String(name));
-    });
-
-
-
+*/
+   
 });
 
 

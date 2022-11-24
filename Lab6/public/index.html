@@ -1,112 +1,49 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>The Chatroom</title>
+    <title>Star War</title>
     <script src="https://code.jquery.com/jquery-3.6.1.min.js"></script>
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
+    <link href="Gamestyle.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P" rel="stylesheet">
-    <style>
-        body {
-            font-family: "Press Start 2P", sans-serif;
-        }
-        #game-container {
-            position: relative;
-        }
-        canvas, #counter, #game-start, #game-over {
-            position: absolute;
-            top: 0px;
-            left: 0px;
-        }
-        canvas, #game-start, #game-over {
-            border: 1px solid gray;
-            width: 854px;
-            height: 480px;
-        }
-        canvas {
-            background: url(background.png);
-            background-size: cover;
-        }
-        #game-start, #game-over {
-            background: rgba(1, 1, 1, 0.8);
-        }
-        #counter text {
-            font-size: 130%;
-            fill: white;
-            stroke: black;
-            stroke-width: 1px;
-        }
-        #game-start text {
-            font-size: 150%;
-            fill: white;
-            text-anchor: middle;
-        }
-        #game-start #game-title {
-            font-size: 400%;
-            fill: url(#title-fill);
-            stroke: black;
-        }
-        #game-over text {
-            font-size: 120%;
-            fill: url(#game-over-fill);
-            text-anchor: middle;
-        }
-        </style>
+    
 </head>
 <body>
-    
-     <!-- <div id="container" class="col">
-        <div id="header" class="row">
-            <div id="title">The Chatroom
-                <span class="material-icons">chat</span>
-            </div>
-
-            <div class="spacer-grow"></div>
-
-            <div id="user-panel" class="row">
-                <div class="field-content row shadow">
-                    <span class="user-avatar"></span>
-                    <span class="user-name">-</span>
-                </div>
-                <button id="signout-button" class="icon"><span class="material-icons">logout</span></button>
-            </div>
-        </div>
-
-        <div id="main-panel" class="row">
-            <div id="chat-panel" class="col">
-                <div id="chat-area" class="col"></div>
-                <div id="typing" class="col"></div>
-                <form id="chat-input-form" autocomplete="off">
-                    <input id="chat-input" placeholder="Enter your message"></input>
-                </form>
-            </div>
-
-            <div id="online-users-panel" class="col">
-                <div id="online-users-area" class="col"></div>
-            </div>
-        </div>
-    </div> -->
-
-    <div id="container">
-        <canvas width="854px" height="480px"></canvas>
+     <div id="game-container">
+        <canvas id="left_canvas" width="360px" height="600px"></canvas>
+        <canvas id="right_canvas" width="360px" height="600px"></canvas>
+        <canvas id="status_bar" width="746px" height="36px"></canvas>
 
         <svg xmlns="http://www.w3.org/2000/svg" id="counter">
-            <text x="10" y="35">
-                TIME:<tspan id="time-remaining">20</tspan>
+            <text x="10" y="32">
+                TIME:<tspan id="time-remaining">60</tspan>
             </text>
         </svg>
 
-        <svg xmlns="http://www.w3.org/2000/svg" id="game-start">
+        <svg xmlns="http://www.w3.org/2000/svg" id="score">
+            <text x="10" y="32">
+                Score:<tspan id="player1-score">0</tspan>
+            </text>
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" id="score2">
+            <text x="10" y="32">
+                Score:<tspan id="player2-score">0</tspan>
+            </text>
+        </svg>
+
+        <svg xmlns="http://www.w3.org/2000/svg" id="game-start" >
             <defs>
                 <linearGradient id="title-fill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0.2" stop-color="red" />
-                    <stop offset="0.4" stop-color="yellow" />
-                    <stop offset="0.6" stop-color="green" />
+                    <stop offset="0.2" stop-color="green" />
+                    <stop offset="0.5" stop-color="blue" />
                     <stop offset="0.8" stop-color="purple" />
+                    <stop offset="0.9" stop-color="brown" />
                 </linearGradient>
             </defs>
-            <text id="game-title" x="50%" y="45%">GEM RUSH!</text>
-            <text x="50%" y="60%">Click here to start the game</text>
+            <text id="game-title" x="52%" y="73%">READY</text>
+            <!-- <text x="50%" y="60%">Click here to start the game</text> -->
         </svg>
 
         <svg xmlns="http://www.w3.org/2000/svg" id="game-over" style="display: none">
@@ -118,13 +55,12 @@
                 </linearGradient>
             </defs>
             <text x="50%" y="50%">
-                Time's up! You have collected
-                <tspan id="final-gems">0</tspan>
-                gem(s).
+                END!
+                <!-- <tspan id="final-gems">0</tspan>
+                gem(s). -->
             </text>
         </svg>
     </div>
-
 
     <div id="signin-overlay" class="overlay row">
         <div class="content shadow row">
@@ -157,6 +93,7 @@
             </form>
         </div>
     </div>
+   
 
     <script src="/socket.io/socket.io.min.js"></script>
     <script src="scripts/socket.js"></script>
@@ -170,143 +107,13 @@
     <script src="scripts/player.js"></script>
     <script src="scripts/gem.js"></script>
     <script src="scripts/fire.js"></script>
-    <script>
-    $(document).ready(function() {
-        /* Get the canvas and 2D context */
-        const cv = $("canvas").get(0);
-        const context = cv.getContext("2d");
-
-        /* Create the sounds */
-        const sounds = {
-            background: new Audio("background.mp3"),
-            collect: new Audio("collect.mp3"),
-            gameover: new Audio("gameover.mp3")
-        };
-
-        const totalGameTime = 20;   // Total game time in seconds
-        const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
-        let gameStartTime = 0;      // The timestamp when the game starts
-        let collectedGems = 0;      // The number of gems collected in the game
-
-        /* Create the game area */
-        const gameArea = BoundingBox(context, 165, 60, 420, 800);
-
-        /* Create the sprites in the game */
-        const player = Player(context, 427, 240, gameArea); // The player
-        const gem = Gem(context, 427, 350, "green");        // The gem
-        const fires = [Fire(context, 25, 160),
-        Fire(context, 25, 460),
-        Fire(context, 830, 160),
-        Fire(context, 830, 460)];
-
-        /* The main processing of the game */
-        function doFrame(now) {
-            if (gameStartTime == 0) gameStartTime = now;
-
-            /* Update the time remaining */
-            const gameTimeSoFar = now - gameStartTime;
-            const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
-            $("#time-remaining").text(timeRemaining);
-
-
-            /* TODO */
-            /* Handle the game over situation here */
-            if (timeRemaining <= 0){
-                $("#final-gems").text(collectedGems);
-                $("#game-over").show();
-                sounds.background.pause();
-                sounds.gameover.play();
-                return;
-            }
-
-            /* Update the sprites */
-            gem.update(now);
-            player.update(now);
-            fires[0].update(now);
-            fires[1].update(now);
-            fires[2].update(now);
-            fires[3].update(now);
-
-
-            /* TODO */
-            /* Randomize the gem and collect the gem here */
-            if (gem.getAge(now) > gemMaxAge)
-                gem.randomize(gameArea);
-            
-            const {x,y} = gem.getXY();
-            const box = player.getBoundingBox();
-            if (box.isPointInBox(x, y)) {
-                collectedGems++;
-
-                sounds.collect.currentTime = 0;
-                sounds.background.pause();
-                sounds.collect.play();
-                sounds.background.play();
-                gem.randomize(gameArea);
-            }
-
-            /* Clear the screen */
-            context.clearRect(0, 0, cv.width, cv.height);
-
-            /* Draw the sprites */
-            gem.draw();
-            player.draw();
-            fires[0].draw();
-            fires[1].draw();
-            fires[2].draw();
-            fires[3].draw();
-
-            /* Process the next frame */
-            requestAnimationFrame(doFrame);
-        }
-
-        /* Handle the start of the game */
-        $("#game-start").on("click", function() {
-            /* Hide the start screen */
-            $("#game-start").hide();
-            sounds.background.play();
-
-
-            /* Handle the keydown of arrow keys and spacebar */
-            $(document).on("keydown", function(event) {
-
-
-                /* TODO */
-                /* Handle the key down */
-                switch (event.keyCode) {
-                    case 37: player.move(1); break;
-                    case 38: player.move(2); break;
-                    case 39: player.move(3); break;
-                    case 40: player.move(4); break;
-                    case 32: player.speedUp(); break;
-                }
-
-
-            });
-
-            /* Handle the keyup of arrow keys and spacebar */
-            $(document).on("keyup", function(event) {
-
-
-                /* TODO */
-                /* Handle the key up */
-                switch (event.keyCode) {
-                    case 37: player.stop(1); break;
-                    case 38: player.stop(2); break;
-                    case 39: player.stop(3); break;
-                    case 40: player.stop(4); break;
-                    case 32: player.slowDown(); break;
-                }
-
-            });
-
-            gem.randomize(gameArea);
-
-            /* Start the game */
-            requestAnimationFrame(doFrame);
-        });
-    });
-    </script>
+    <script src="scripts/heart.js"></script>
+    <script src="scripts/bullet.js"></script>
+    <script src="scripts/monster.js"></script>
+    <script src="scripts/coin.js"></script>
+    <script src="scripts/blackhole.js"></script>
+    <script src="scripts/main.js"></script>
+    <script src="scripts/clone.js"></script>
     <script>
     $(document).ready(function() {
         // Initialize the UI
@@ -316,22 +123,15 @@
         Authentication.validate(
             () => {
                 SignInForm.hide();
-                UserPanel.update(Authentication.getUser());
-                UserPanel.show();
-
+                console.log("sign in success");
                 Socket.connect();
             },
-            () => { SignInForm.show(); }
+            () => { SignInForm.show();}
         );
 
-        // $(document).on("keydown", function(e) {
-        //     // The player jumps if the spacebar key is down
-        //     if (e.keyCode != 32)
-        //     console.log("hi");
-        // });
-
-
+        
     });
+
     </script>
 
 </body>

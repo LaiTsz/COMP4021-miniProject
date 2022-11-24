@@ -251,7 +251,6 @@ const ChatPanel = (function() {
 					.append($("<div class='chat-content'>" + message.content + "</div>"))
 				)
 		);
-		chatArea.scrollTop(chatArea[0].scrollHeight);
     };
 
     return { initialize, update, addMessage, changetext };

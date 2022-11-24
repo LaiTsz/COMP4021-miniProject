@@ -18,6 +18,7 @@ const BoundingBox = function(ctx, top, left, bottom, right) {
 
     // This function gets the top side of the bounding box.
     const getTop = function() {
+        console.log(top);
         return top;
     };
 
