@@ -162,31 +162,97 @@ const { createServer } = require("http");
 const { Server } = require("socket.io");
 const httpServer = createServer( app );
 const io = new Server(httpServer);
-let players = {};
 
+//A JavaScript object storing the online users
+const onlineUsers = {}
+let playerCount=0
+//Handle the web socket connection
+io.on("connection",(socket)=>{
+    //Add a new user to the online user list 
+    if(socket.request.session.user){
+        playerCount++
+        const {username, avatar, name} = socket.request.session.user;
+        onlineUsers[username]= {avatar,name};
+        console.log(onlineUsers);
 
-io.on("connection", (socket) =>{
-    
-    /*socket.on('newPlayer',data =>{
-        console.log("New client connected, with id: "+socket.id);
-        players[socket.id] = data;
-        console.log("Starting position: "+players[socket.id].x+" - "+players[socket.id].y);
-        console.log("players dictionary: ", players);
-        io.emit('updatePlayers', players);
-    })
-    socket.on("disconnect", () => {
-        delete players[socket.id];
-        io.emit('updatePlayers', players);
+        //Broadcast the signed-in user
+        io.emit("add user",JSON.stringify(socket.request.session.user));
+        if(playerCount==2){
+            io.emit("game start");
+        }
+    }
+
+    socket.on("disconnect",()=>{
+        if(socket.request.session.user){
+            playerCount--;
+            const {username} = socket.request.session.user;
+            if(onlineUsers[username]) delete onlineUsers[username];
+            console.log(onlineUsers);
+
+            //Broadcast the signed-in user
+            io.emit("remove user",JSON.stringify(socket.request.session.user));
+            }
     });
-*/
-   
-});
 
-
+    socket.on("get users",()=>{
+        //Send the online users to the browser
+        socket.emit("users",JSON.stringify(onlineUsers));
+    });
+    socket.on("get messages",()=>{
+        //Send the chatroom messages to the browser
+        const message = JSON.parse(fs.readFileSync("data/chatroom.json"))
+        socket.emit("messages",JSON.stringify(message))
+    })
+    socket.on("post message",(content) =>{
+       
+        const user = socket.request.session.user;
+        const message={
+            user: user,
+            datetime: new Date(),
+            content: content
+        }
+        const chatroom = JSON.parse(fs.readFileSync("data/chatroom.json"));
+        chatroom.push(message);
+        fs.writeFileSync("data/chatroom.json", JSON.stringify(chatroom,null," "));
+        io.emit("add message",JSON.stringify(message));
+    })
+    socket.on("get users",()=>{
+        //Send the online users to the browser
+        socket.emit("users",JSON.stringify(onlineUsers));
+    });
+    socket.on("add typing",()=>{
+        const user = socket.request.session.user;
+        console.log(user);
+        const name = user.name;
+        console.log(name)
+        io.emit("add typing",name);
+    })
+    socket.on("score update",(score)=>{
+        socket.broadcast.emit('client score',score)
+    })
+    socket.on("player update",(position)=>{
+        socket.broadcast.emit('client position',{x:position.x,y:position.y})
+    })
+    socket.on("coin update",(position)=>{
+        socket.broadcast.emit('client coin',{x:position.x,y:position.y})
+    })
+    socket.on("heart update",(position)=>{
+        socket.broadcast.emit('client heart',position);
+    })
+    socket.on("bullet update",(position)=>{
+        socket.broadcast.emit('client bullet',position);
+    })
+    socket.on("monster update",(position)=>{
+        socket.broadcast.emit('client monster',position);
+    })
+    socket.on("get Damage",()=>{
+        socket.broadcast.emit('reduce client life');
+    })
+})
+//use the session in the Socket.IO server
 io.use((socket, next) => {
     chatSession(socket.request, {}, next);
 });
-
 
 // Use a web server to listen at port 8000
 httpServer.listen(8000, () => {

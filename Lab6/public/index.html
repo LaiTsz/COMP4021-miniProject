@@ -56,8 +56,7 @@
             </defs>
             <text x="50%" y="50%">
                 END!
-                <!-- <tspan id="final-gems">0</tspan>
-                gem(s). -->
+                <tspan id="final-gems">0</tspan>
             </text>
         </svg>
     </div>
@@ -115,22 +114,6 @@
     <script src="scripts/main.js"></script>
     <script src="scripts/clone.js"></script>
     <script>
-    $(document).ready(function() {
-        // Initialize the UI
-        UI.initialize();
-
-        // Validate the signin
-        Authentication.validate(
-            () => {
-                SignInForm.hide();
-                console.log("sign in success");
-                Socket.connect();
-            },
-            () => { SignInForm.show();}
-        );
-
-        
-    });
 
     </script>
 

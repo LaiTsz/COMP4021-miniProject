@@ -1,28 +1,74 @@
-$(document).ready(function() {
-
-
-
+let clientScore=0;
+let clientX=0;
+let clientY=0;
+let coinX=0;
+let coinY=0;
+let life_player1 = 2;
+let life_player2 = 2;
+let endGame = 0;
+let heartPos = [{x:0,y:0},{x:0,y:0}];
+let clientHeartPos=[{x:0,y:0},{x:0,y:0}];
+let bulletPos = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+let clientBulletPos=[{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+let monsterPos = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+let clientMonsterPos=[{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+const clientPos=(function(){
+    const updateClientScore=function(score){
+        clientScore=score;
+    };
+    const updateClientPos=function(x,y){
+        clientX=x;
+        clientY=y
+    };
+    const updateCoinPos=function(x,y){
+        coinX=x;
+        coinY=y
+    };
+    const updateHeart=function(arrayOfHeart){
+        clientHeartPos = arrayOfHeart;
+    }
+    const updateBullet=function(arrayOfBullet){
+        clientBulletPos = arrayOfBullet;
+    }
+    const updateMonster=function(arrayOfMonster){
+        clientMonsterPos = arrayOfMonster;
+    }
+    const reduceClientLife=function(){
+        life_player2--;
+    }
+    return {updateClientPos,updateCoinPos,updateHeart,updateBullet,updateMonster,updateClientScore,reduceClientLife};
+})();
+    
     // Socket value
-
-
         function passValue(now){
             if(now != 404)
                 monster[nextMonster].setColor(monsters[nextMonster].getColor());
             else{
-                for(let i = 0;i<10;i++){
+                Socket.scoreUpdate(scorePlayerOne);
+                Socket.heartPositionUpdate(heartPos);
+                Socket.bulletPositionUpdate(bulletPos);
+                Socket.monsterPositionUpdate(monsterPos);
+                heartPos = [];
+                bulletPos = [];
+                monsterPos = [];
+               Socket.playerPositionUpdate(player.getX(),player.getY())
+               Socket.coinPositionUpdate(coin.getX(),coin.getY())
+               for(let i = 0;i<10;i++){
                     if(i<1){
-                        $("#player2-score").text(scorePlayerOne);
-                        playerClone.setXY(player.getX(),player.getY());
-                        coinClone.setXY(coin.getX(),coin.getY());
+                        $("#player2-score").text(clientScore);
+                        playerClone.setXY(clientX,clientY);
+                        coinClone.setXY(coinX,coinY);
                     }
                     if(i<4){
                         if(i<2){
-                            heartsClone[i].setXY(hearts[i].getX()+655,hearts[i].getY());
+                            heartPos.push({x:hearts[i].getX(),y:hearts[i].getY()})
+                            heartsClone[i].setXY(clientHeartPos[i].x+655,clientHeartPos[i].y);
                         }
             
                     }
                     if(i<8){
-                        bulletsClone[i].setXY(bullets[i].getX(),bullets[i].getY());
+                        bulletPos.push({x:bullets[i].getX(),y:bullets[i].getY()})
+                        bulletsClone[i].setXY(clientBulletPos[i].x,clientBulletPos[i].y);
                     }
                     // if(monsters[i].getColor()!="black"){
                     //     monster[i].setColor(monsters[i].getColor());
@@ -32,7 +78,8 @@ $(document).ready(function() {
                         
 
                     //     monster[i].update(now);
-                        monster[i].setXY(monsters[i].getX(),monsters[i].getY());
+                    monsterPos.push({x:monsters[i].getX(),y:monsters[i].getY()})
+                    monster[i].setXY(clientMonsterPos[i].x,clientMonsterPos[i].y);
                 }
             }
         }
@@ -68,8 +115,7 @@ $(document).ready(function() {
         const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
         let gameStartTime = 0;      // The timestamp when the game starts
         let collectedGems = 0;      // The number of gems collected in the game
-        let life_player1 = 2;
-        let life_player2 = 2;
+        
 
 
         /* Create the game area */
@@ -177,7 +223,6 @@ $(document).ready(function() {
     let active = 0;
     let nextbullet = 0;
     let nextMonster = 0;
-    let endGame = 0;
     let speedOfShoot = 1000;
     let timeToStart = 3;
     let noFirstBullet = 0;
@@ -225,6 +270,9 @@ $(document).ready(function() {
 
             if (gameStartTime == 0) gameStartTime = now;
 
+            if(endGame == 1){
+                return;
+            }
             /* Update the time remaining */
             const gameTimeSoFar = now - gameStartTime;
             const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
@@ -235,15 +283,22 @@ $(document).ready(function() {
             /* TODO */
             /* Handle the game over situation here */
             if (timeRemaining <= 0){
-                endGame = 1;
+                endGame=1;
+                for(let i = 0;i<2;i++){
+                    hearts[i].resetHeart();
+                    heartsClone[i].resetHeart();
+                    hearts[i].update(now);
+                    heartsClone[i].update(now);
+                    hearts[i].draw();
+                    heartsClone[i].draw();
+                }
                 $("#final-gems").text(collectedGems);
                 $("#game-over").show();
-                sounds.background.pause();
-                sounds.collect.pause();
                 sounds.plane.pause();
+                sounds.background.pause();
                 sounds.fire.pause();
+                sounds.collect.pause();
                 sounds.gameover.play();
-                return;
             }
 
             if(active == 0){
@@ -378,6 +433,7 @@ $(document).ready(function() {
                         sounds.background.play();
                         monsters[i].resetMonster();
                         monster[i].resetMonster();
+                        Socket.hitMonster();
                         life_player1--;
                     }
                 for(let y = 0;y<8;y++){
@@ -396,21 +452,31 @@ $(document).ready(function() {
             }
             if(life_player1 == 1)
                 hearts[1].resetHeart();
-            if(life_player1 <= 0) {
+            if(life_player1 <= 0 ||life_player2<=0) {
                 endGame = 1;
-                heartsClone[0].setXY(hearts[0].getX()+655,hearts[0].getY());
-                hearts[0].resetHeart();
-                heartsClone[0].resetHeart();
-                hearts[0].update(now);
-                heartsClone[0].update(now);
-                $("#final-gems").text(collectedGems);
-                $("#game-over").show();
+                for(let i = 0;i<2;i++){
+                    hearts[i].resetHeart();
+                    heartsClone[i].resetHeart();
+                    hearts[i].update(now);
+                    heartsClone[i].update(now);
+                    hearts[i].draw();
+                    heartsClone[i].draw();
+                }
+                if(life_player1 <= 0){
+                    $("#final-gems").text("You lose and you collect"+scorePlayerOne+ " scores");
+                    $("#game-over").show();
+                }else{
+                    $("#final-gems").text("You win and you collect "+scorePlayerOne+ " scores");
+
+                    $("#game-over").show();
+                }
+                
                 sounds.plane.pause();
                 sounds.background.pause();
                 sounds.fire.pause();
                 sounds.collect.pause();
                 sounds.gameover.play();
-                //return;
+                console.log("END")
             }
 
             /* Clear the screen */
@@ -470,7 +536,7 @@ $(document).ready(function() {
 
 
 
-        $("#game-start").on("click", function() {
+       const gameStart=function() {
             /* Hide the start screen */
             $("#game-start").hide();
              sounds.background.play();
@@ -485,10 +551,10 @@ $(document).ready(function() {
                 /* Handle the key down */
                 switch (event.keyCode) {
                     
-                    case 37: player.move(1); playerClone.move(1);break;
-                    case 38: player.move(2); playerClone.move(2);break;
-                    case 39: player.move(3); playerClone.move(3);break;
-                    case 40: player.move(4); playerClone.move(4);break;
+                    case 37: player.move(1); break;
+                    case 38: player.move(2); break;
+                    case 39: player.move(3); break;
+                    case 40: player.move(4); break;
                     case 32: player.speedUp(); 
                     for(let i = 0;i<8;i++){
                         bullets[i].speedUp();
@@ -506,10 +572,10 @@ $(document).ready(function() {
                 /* TODO */
                 /* Handle the key up */
                 switch (event.keyCode) {
-                    case 37: player.stop(1); playerClone.stop(1);break;
-                    case 38: player.stop(2); playerClone.stop(2);break;
-                    case 39: player.stop(3); playerClone.stop(3);break;
-                    case 40: player.stop(4); playerClone.stop(4);break;
+                    case 37: player.stop(1); break;
+                    case 38: player.stop(2); break;
+                    case 39: player.stop(3); break;
+                    case 40: player.stop(4); break;
                     case 32: player.slowDown();
                     for(let i = 0;i<8;i++){
                         bullets[i].slowDown();
@@ -523,5 +589,17 @@ $(document).ready(function() {
 
             /* Start the game */
             requestAnimationFrame(doFrame);
-        });
-    });
+        };
+
+    UI.initialize();
+
+    // Validate the signin
+    Authentication.validate(
+        () => {
+            SignInForm.hide();
+            console.log("sign in success");
+            Socket.connect();
+        },
+        () => { SignInForm.show();
+            }
+    );
