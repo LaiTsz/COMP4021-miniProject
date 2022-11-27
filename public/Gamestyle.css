@@ -1,0 +1,88 @@
+body {
+    font-family: "Press Start 2P", sans-serif;
+}
+html{
+    background: url(dark_background.png);
+    background-size: auto;
+}
+#game-container {
+    position: relative;
+}
+canvas, #counter, #game-start, #game-over, #score, #score2 {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+#left_canvas{
+    top: 50px;
+    left: 20px;
+    border: 10px ridge rgb(98, 0, 255);
+    background: url(moon_background.jpg);
+    background-size: cover;
+}
+#status_bar{
+    left: 20px;
+    border: 7px groove rgb(153, 85, 40);
+    background: url(brown-wooden-flooring.jpg);
+}
+#counter{
+    top: 5px;
+    left: 320px;
+}
+#score{
+    top: 3px;
+    left: 150px;
+}
+#score2{
+    top: 3px;
+    left: 530px;
+}
+#right_canvas{
+    top: 50px;
+    left: 400px;
+    border: 10px ridge rgb(151, 0, 0);
+    background: url(moon_background.jpg);
+    background-size: cover;
+}
+#game-start, #game-over {
+    background: rgba(0, 0, 0, 0.733);
+    top: 250px;
+    left: 200px;
+}
+#counter text {
+    font-size: 130%;
+    fill: rgb(10, 31, 100);
+    stroke: rgb(56, 221, 243);
+    stroke-width: 1px;
+}
+#score text, #score2 text{
+    font-size: 100%;
+    fill: white;
+    stroke: black;
+    stroke-width: 1px;
+}
+#game-start text {
+    font-size: 110%;
+    fill: white;
+    text-anchor: middle;
+    text-align: center;
+}
+#game-start #game-title {
+    font-size: 400%;
+    fill: url(#title-fill);
+    stroke: black;
+}
+#game-over text {
+    font-size: 120%;
+    fill: url(#game-over-fill);
+    text-anchor: middle;
+}
+#game-container {
+    padding: 0;
+    margin: auto;
+    display: block;
+    width: 800px; 
+}
+#game-start, #game-over {
+    width: 400px;
+}
