@@ -10,13 +10,21 @@
     
 </head>
 <body>
-     <div id="game-container">
+    <div id="header" class="row">
+        <div id="title">Space war</div>
+        <div id="user-panel" class="row">
+            <div class="field-content row shadow">
+                <span class="user-name">-</span>
+            </div>
+        </div>
+    </div>
+    <div id="game-container">
         <canvas id="left_canvas" width="360px" height="600px"></canvas>
         <canvas id="right_canvas" width="360px" height="600px"></canvas>
         <canvas id="status_bar" width="746px" height="36px"></canvas>
 
         <svg xmlns="http://www.w3.org/2000/svg" id="counter">
-            <text x="10" y="32">
+            <text x="45" y="32">
                 TIME:<tspan id="time-remaining">60</tspan>
             </text>
         </svg>
@@ -32,7 +40,8 @@
                 Score:<tspan id="player2-score">0</tspan>
             </text>
         </svg>
-
+        
+        
         <svg xmlns="http://www.w3.org/2000/svg" id="game-start" >
             <defs>
                 <linearGradient id="title-fill" x1="0" y1="0" x2="0" y2="1">
@@ -45,20 +54,49 @@
             <text id="game-title" x="52%" y="73%">READY</text>
             <!-- <text x="50%" y="60%">Click here to start the game</text> -->
         </svg>
-
-        <svg xmlns="http://www.w3.org/2000/svg" id="game-over" style="display: none">
-            <defs>
-                <linearGradient id="game-over-fill" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0" stop-color="red" />
-                    <stop offset="0.5" stop-color="yellow" />
-                    <stop offset="1" stop-color="red" />
-                </linearGradient>
-            </defs>
-            <text x="50%" y="50%">
-                END!
-                <tspan id="final-gems">0</tspan>
-            </text>
-        </svg>
+        
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" id="game-over" style="display: none">
+                <defs>
+                    <linearGradient id="game-over-fill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0" stop-color="red" />
+                            <stop offset="0.5" stop-color="yellow" />
+                            <stop offset="1" stop-color="red" />
+                        </linearGradient>
+                    </defs>
+                    <text x="50%" y="30%">
+                        END!
+                        <tspan id="final-gems">0</tspan>
+                    </text>
+                    <text x="50%" y="70%" id="signout-button">Quit</text>
+                </svg>
+            
+        </div>
+        <div>
+            <svg xmlns="http://www.w3.org/2000/svg" id="description" style="display: none">
+                <defs>
+                    <linearGradient id="description-fill" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0" stop-color="red" />
+                            <stop offset="0.5" stop-color="yellow" />
+                            <stop offset="1" stop-color="red" />
+                        </linearGradient>
+                    </defs>
+                    <text y="10%">
+                    <!-- Description -->
+                    <tspan x="12%" dy="1.2em">Control:</tspan>
+                    <tspan x="12%" dy="1.2em">the spaceship will shoot automatically</tspan>
+                    <tspan x="12%" dy="1.2em">Rule:</tspan>
+                    <tspan x="12%" dy="1.2em">collect coin will get 5 score</tspan>
+                    <tspan x="12%" dy="1.2em">kill a monster will get 1 score </tspan>
+                    <tspan x="12%" dy="1.2em">Wait until two player join this game to start</tspan>
+                    <tspan x="12%" dy="1.2em">when one of players died or time up, the game end </tspan>
+                    <tspan x="12%" dy="1.2em">press space to enable cheat mode to shoot faster</tspan>
+                    </text>
+                    <text x="45%" y="90%" id="close-Description">Close</text>
+                </svg>
+            
+        </div>
+        
     </div>
 
     <div id="signin-overlay" class="overlay row">
@@ -71,7 +109,7 @@
                 <div class="spacer-0"></div>
                 <button type="submit">Sign In</button>
                 <div id="signin-message" class="warning center"></div>
-                <div class="spacer-grow"></div>
+                <button type="button" id="show-Description">Description</button>
             </form>
 
             <div class="spacer-0"></div>
@@ -80,9 +118,6 @@
                 <div class="caption">OR, REGISTER IF YOU DO NOT HAVE ONE</div>
                 <div class="spacer-0"></div>
                 <input id="register-username" maxlength="10" placeholder="Enter your username"></input>
-                <select id="register-avatar">
-                    <option value="">Select your avatar</option>
-                </select>
                 <input id="register-name" maxlength="16" placeholder="Enter your name"></input>
                 <input id="register-password" type="password" placeholder="Enter your password"></input>
                 <input id="register-confirm" type="password" placeholder="Enter your password again"></input>

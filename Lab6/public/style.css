@@ -5,14 +5,10 @@
     --field-background: white;
     --field-background-hover: #eee;
     --input-background: #eee;
-    --overlay-background: rgba(245, 158, 114, 0.8);
-    --overlay-caption-color: #eb4a40;
-    --overlay-content-background: linear-gradient(white, #fde0c5);
-
-    --header-background: linear-gradient(to right, #eb4a40, #f59e72);
-    --main-panel-background: linear-gradient(white, #fde0c5);
-    --online-users-panel-background: linear-gradient(to right, #fde0c5, #facba6);
-    --chat-panel-background: none;
+    --overlay-background: rgba(53, 53, 53, 0.8);
+    --overlay-caption-color: white;   
+    --overlay-content-background:url(universe.jpeg);
+ 
 
     --title-color: white;
     --caption-color: white;
@@ -20,12 +16,12 @@
     --font-color: black;
     --date-color: gray;
 
-    --register-form-background: linear-gradient(#fde0c5, #facba6);
+    
     --warning-color: red;
 
     --button-color: white;
-    --button-background: #f2855d;
-    --button-background-hover: #f8b58b;
+    --button-background: rgb(31, 84, 145);
+    --button-background-hover: rgb(185, 40, 84);
 }
 * {
     font-family: "Abel", sans-serif;
@@ -168,6 +164,7 @@ button.icon:active {
 #title {
     font-family: Abel, sans-serif;
     font-size: 300%;
+    align-items: center;
     text-transform: uppercase;
     color: var(--title-color);
     user-select: none;
@@ -182,6 +179,7 @@ button.icon:active {
 #signin-user {
     cursor: pointer;
 }
+
 
 /* Main panel */
 #main-panel {
@@ -219,34 +217,6 @@ button.icon:active {
 }
 
 
-.chat-message-panel {
-    align-items: flex-start;
-    padding: 0;
-}
-.chat-message {
-    align-items: start;
-    gap: 5px;
-    padding: 0;
-}
-.chat-date {
-    font-size: 75%;
-    color: var(--date-color);
-}
-
-/* Online users panel */
-#online-users-panel {
-	flex: 0 0 250px;
-    height: 100%;
-    padding: 0;
-    background: var(--online-users-panel-background);
-}
-#online-users-area {
-    flex-grow: 1;
-    width: 100%;
-    align-items: flex-start;
-    justify-content: start;
-    overflow-y: auto;
-}
 
 /* Signin overlay */
 #signin-form {

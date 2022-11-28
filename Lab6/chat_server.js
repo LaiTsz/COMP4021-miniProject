@@ -39,9 +39,9 @@ app.post("/register", (req, res) => {
     //
     // E. Checking for the user data correctness
     //
-    if (!username || !avatar || !name || !password){
+    if (!username || !name || !password){
         res.json({  status: "error",
-                    error: "Username/avatar/name/password cannot be empty." });
+                    error: "Username/name/password cannot be empty." });
         return;
     }
 
@@ -110,8 +110,8 @@ app.post("/signin", (req, res) => {
     //  req.session.user = { username, avatar: users.avatar, name: users.name };
     //  res.json({ status: "success", user: { username, avatar: users.avatar, name: users.name } });
 
-     req.session.user = { username, avatar: users[username].avatar, name: users[username].name };
-     res.json({ status: "success", user: { username, avatar: users[username].avatar, name: users[username].name } });
+     req.session.user = { username, name: users[username].name };
+     res.json({ status: "success", user: { username,  name: users[username].name } });
  
     // Delete when appropriate
     // res.json({ status: "error", error: "This endpoint is not yet implemented." });

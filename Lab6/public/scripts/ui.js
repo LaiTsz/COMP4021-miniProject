@@ -7,6 +7,20 @@ const SignInForm = (function() {
         // Hide it
         $("#signin-overlay").hide();
 
+        //show 
+        $("#show-Description").click(function() {
+            $("#description").show();
+            $("#signin-overlay").hide();
+            $("#game-start").hide();
+          });
+        
+        //close
+        $("#close-Description").click(function() {
+            $("#description").hide();
+            $("#signin-overlay").show();
+            $("#game-start").show();
+          });
+
         // Submit event for the signin form
         $("#signin-form").on("submit", (e) => {
             // Do not submit the form
@@ -36,7 +50,6 @@ const SignInForm = (function() {
 
             // Get the input fields
             const username = $("#register-username").val().trim();
-            const avatar   = $("#register-avatar").val();
             const name     = $("#register-name").val().trim();
             const password = $("#register-password").val().trim();
             const confirmPassword = $("#register-confirm").val().trim();
@@ -48,7 +61,7 @@ const SignInForm = (function() {
             }
 
             // Send a register request
-            Registration.register(username, avatar, name, password,
+            Registration.register(username, name, password,
                 () => {
                     $("#register-form").get(0).reset();
                     $("#register-message").text("You can sign in now.");

@@ -8,7 +8,7 @@ html{
 #game-container {
     position: relative;
 }
-canvas, #counter, #game-start, #game-over, #score, #score2 {
+canvas, #counter, #game-start, #game-over, #score, #score2, #description{
     position: absolute;
     top: 0px;
     left: 0px;
@@ -44,7 +44,7 @@ canvas, #counter, #game-start, #game-over, #score, #score2 {
     background: url(moon_background.jpg);
     background-size: cover;
 }
-#game-start, #game-over {
+#game-start, #game-over{
     background: rgba(0, 0, 0, 0.733);
     top: 250px;
     left: 200px;
@@ -85,4 +85,20 @@ canvas, #counter, #game-start, #game-over, #score, #score2 {
 }
 #game-start, #game-over {
     width: 400px;
+}
+
+#description{
+    background: rgba(0, 0, 0, 0.733);
+    top: 100px;
+    left: 105px;
+    width: 600px;
+    height: 350px;
+    z-index: 1;
+}
+
+#description text {
+    font-size: 150%;
+    fill: url(#description-fill);
+    text-anchor: start;
+    z-index: 2;
 }

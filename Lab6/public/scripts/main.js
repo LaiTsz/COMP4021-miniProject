@@ -463,13 +463,14 @@ const clientPos=(function(){
                     heartsClone[i].draw();
                 }
                 if(life_player1 <= 0){
-                    $("#final-gems").text("You lose and you collect"+scorePlayerOne+ " scores");
+                    $("#final-gems").text("You lose and you collect "+scorePlayerOne+ " scores");
                     $("#game-over").show();
                 }else{
                     $("#final-gems").text("You win and you collect "+scorePlayerOne+ " scores");
 
                     $("#game-over").show();
                 }
+
                 
                 sounds.plane.pause();
                 sounds.background.pause();
