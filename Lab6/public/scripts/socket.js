@@ -85,6 +85,13 @@ const Socket = (function() {
         socket.on("reduce client life",()=>{
             clientPos.reduceClientLife();
         })
+        socket.on("Ranking",(score1,score2,score3,username1,username2,username3)=>{
+            console.log(score1);
+            console.log(username1);
+            $("#rank1").text(username1 +"   "+ score1);
+            $("#rank2").text(username2 +"   "+ score2);
+            $("#rank3").text(username3 +"   "+ score3);
+        })
         
     };
 
@@ -126,7 +133,12 @@ const Socket = (function() {
     const hitMonster = function(){
         socket.emit('get Damage');
     }
+    const scoreRanking = function(score) {
+        if (socket && socket.connected) {
+            socket.emit("user score", score);
+        }
+    };
     
     return { getSocket, connect, disconnect, postMessage,typingMessage,scoreUpdate,playerPositionUpdate,
-        coinPositionUpdate,heartPositionUpdate,bulletPositionUpdate,monsterPositionUpdate,hitMonster};
+        coinPositionUpdate,heartPositionUpdate,bulletPositionUpdate,monsterPositionUpdate,hitMonster, scoreRanking,};
 })();

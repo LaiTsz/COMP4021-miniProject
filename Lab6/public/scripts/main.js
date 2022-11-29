@@ -12,6 +12,7 @@ let bulletPos = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:
 let clientBulletPos=[{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
 let monsterPos = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
 let clientMonsterPos=[{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+
 const clientPos=(function(){
     const updateClientScore=function(score){
         clientScore=score;
@@ -36,7 +37,10 @@ const clientPos=(function(){
     const reduceClientLife=function(){
         life_player2--;
     }
-    return {updateClientPos,updateCoinPos,updateHeart,updateBullet,updateMonster,updateClientScore,reduceClientLife};
+    const rankingData=function(array){
+        life_player2--;
+    }
+    return {updateClientPos,updateCoinPos,updateHeart,updateBullet,updateMonster,updateClientScore,reduceClientLife,rankingData};
 })();
     
     // Socket value
@@ -100,6 +104,7 @@ const clientPos=(function(){
 
         const cvcc = document.getElementById('right_canvas');
         const right_context = cvcc.getContext('2d');
+        
 
         /* Create the sounds */
         const sounds = {
@@ -284,6 +289,7 @@ const clientPos=(function(){
             /* Handle the game over situation here */
             if (timeRemaining <= 0){
                 endGame=1;
+                Socket.scoreRanking(collectedGems);
                 for(let i = 0;i<2;i++){
                     hearts[i].resetHeart();
                     heartsClone[i].resetHeart();
@@ -454,6 +460,7 @@ const clientPos=(function(){
                 hearts[1].resetHeart();
             if(life_player1 <= 0 ||life_player2<=0) {
                 endGame = 1;
+            
                 for(let i = 0;i<2;i++){
                     hearts[i].resetHeart();
                     heartsClone[i].resetHeart();
@@ -461,16 +468,17 @@ const clientPos=(function(){
                     heartsClone[i].update(now);
                     hearts[i].draw();
                     heartsClone[i].draw();
-                }
+                } 
                 if(life_player1 <= 0){
+                    Socket.scoreRanking(collectedGems);
                     $("#final-gems").text("You lose and you collect "+scorePlayerOne+ " scores");
                     $("#game-over").show();
+                    
                 }else{
+                    Socket.scoreRanking(collectedGems);
                     $("#final-gems").text("You win and you collect "+scorePlayerOne+ " scores");
-
                     $("#game-over").show();
                 }
-
                 
                 sounds.plane.pause();
                 sounds.background.pause();
@@ -531,16 +539,15 @@ const clientPos=(function(){
             requestAnimationFrame(doFrame);
         }
 
-
-
         /* Handle the start of the game */
+       
 
+        
 
-
-       const gameStart=function() {
+        const gameStart=function() {
             /* Hide the start screen */
             $("#game-start").hide();
-             sounds.background.play();
+            sounds.background.play();
             sounds.plane.play();
             //firstbullet();
 
@@ -591,6 +598,7 @@ const clientPos=(function(){
             /* Start the game */
             requestAnimationFrame(doFrame);
         };
+    
 
     UI.initialize();
 

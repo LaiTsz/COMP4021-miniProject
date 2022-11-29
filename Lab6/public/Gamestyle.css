@@ -95,7 +95,9 @@ canvas, #counter, #game-start, #game-over, #score, #score2, #description{
     height: 350px;
     z-index: 1;
 }
-
+#game-over{
+    height: 300px;
+}
 #description text {
     font-size: 150%;
     fill: url(#description-fill);
