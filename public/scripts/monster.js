@@ -15,7 +15,8 @@ const Monster = function(ctx, x, y, color, gameArea) {
         blue: { x: 417, y: 0, width: 67, height: 70.25, count: 2, timing: 200, loop: true },
         orange: { x: 625.5, y: 281, width: 67, height: 70.25, count: 2, timing: 200, loop: true },
         skyblue: { x: 417, y: 281, width: 67, height: 70.25, count: 2, timing: 200, loop: true },
-        gray: { x: 0, y: 281, width: 67, height: 70.25, count: 2, timing: 200, loop: true }
+        gray: { x: 0, y: 281, width: 67, height: 70.25, count: 2, timing: 200, loop: true },
+        none: { x: 0, y: 281, width: 0, height: 0, count: 0, timing: 200, loop: true }
     };
 
     // This is the sprite object of the gem created from the Sprite module.

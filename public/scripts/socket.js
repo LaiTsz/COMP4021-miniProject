@@ -67,6 +67,11 @@ const Socket = (function() {
         socket.on("client score",(score)=>{
             clientPos.updateClientScore(score);
         })
+        socket.on("retry",()=>{
+            //requestAnimationFrame(doFrame);
+            //console.log("test");
+            clientPos.startTheGame();
+        })
         socket.on("client position",(position)=>{
             clientPos.updateClientPos(position.x,position.y);
         })
@@ -75,6 +80,9 @@ const Socket = (function() {
         })
         socket.on("client heart",(position)=>{
             clientPos.updateHeart(position);
+        })
+        socket.on("client color",(color,nextMonster)=>{
+            clientPos.updateColor(color,nextMonster);
         })
         socket.on("client bullet",(position)=>{
             clientPos.updateBullet(position);
@@ -86,11 +94,11 @@ const Socket = (function() {
             clientPos.reduceClientLife();
         })
         socket.on("Ranking",(score1,score2,score3,username1,username2,username3)=>{
-            console.log(score1);
-            console.log(username1);
-            $("#rank1").text(username1 +"   "+ score1);
-            $("#rank2").text(username2 +"   "+ score2);
-            $("#rank3").text(username3 +"   "+ score3);
+            // console.log(score1);
+            // console.log(username1);
+            $("#rank1").text(username1 +"        "+ score1);
+            $("#rank2").text(username2 +"        "+ score2);
+            $("#rank3").text(username3 +"        "+ score3);
         })
         
     };
@@ -99,6 +107,10 @@ const Socket = (function() {
     const disconnect = function() {
         socket.disconnect();
         socket = null;
+    };
+
+    const replay = function() {
+        socket.emit("replay");
     };
 
     // This function sends a post message event to the server
@@ -129,6 +141,9 @@ const Socket = (function() {
     const monsterPositionUpdate =function(arrayOfXY){
         socket.emit('monster update',arrayOfXY);
     }
+    const colorUpdate =function(color,nextMonster){
+        socket.emit('color update',color,nextMonster);
+    }
    
     const hitMonster = function(){
         socket.emit('get Damage');
@@ -140,5 +155,5 @@ const Socket = (function() {
     };
     
     return { getSocket, connect, disconnect, postMessage,typingMessage,scoreUpdate,playerPositionUpdate,
-        coinPositionUpdate,heartPositionUpdate,bulletPositionUpdate,monsterPositionUpdate,hitMonster, scoreRanking,};
+        coinPositionUpdate,heartPositionUpdate,bulletPositionUpdate,monsterPositionUpdate,hitMonster, scoreRanking,colorUpdate,replay};
 })();

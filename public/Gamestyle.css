@@ -8,7 +8,7 @@ html{
 #game-container {
     position: relative;
 }
-canvas, #counter, #game-start, #game-over, #score, #score2, #description{
+canvas, #counter, #game-start, #game-over, #score, #score2, #description, #game-wait{
     position: absolute;
     top: 0px;
     left: 0px;
@@ -26,15 +26,15 @@ canvas, #counter, #game-start, #game-over, #score, #score2, #description{
     background: url(brown-wooden-flooring.jpg);
 }
 #counter{
-    top: 5px;
+    top: 0px;
     left: 320px;
 }
 #score{
-    top: 3px;
+    top: 0px;
     left: 150px;
 }
 #score2{
-    top: 3px;
+    top: 0px;
     left: 530px;
 }
 #right_canvas{
@@ -44,22 +44,28 @@ canvas, #counter, #game-start, #game-over, #score, #score2, #description{
     background: url(moon_background.jpg);
     background-size: cover;
 }
-#game-start, #game-over{
+#game-start, #game-wait{
+
+    background: rgba(187, 171, 171, 0.733);
+    top: 280px;
+    left: 150px;
+}
+#game-over{
     background: rgba(0, 0, 0, 0.733);
-    top: 250px;
-    left: 200px;
+    top: 100px;
+    left: 100px;
 }
 #counter text {
-    font-size: 130%;
+    font-size: 180%;
     fill: rgb(10, 31, 100);
     stroke: rgb(56, 221, 243);
     stroke-width: 1px;
 }
 #score text, #score2 text{
-    font-size: 100%;
-    fill: white;
+    font-size: 170%;
+    fill: rgb(252, 227, 5);
     stroke: black;
-    stroke-width: 1px;
+    stroke-width: 0px;
 }
 #game-start text {
     font-size: 110%;
@@ -67,11 +73,25 @@ canvas, #counter, #game-start, #game-over, #score, #score2, #description{
     text-anchor: middle;
     text-align: center;
 }
-#game-start #game-title {
+#game-wait text {
+    font-size: 200%;
+    fill: rgb(45, 200, 211);
+    text-anchor: middle;
+    text-align: center;
+}
+#game-start #game-title, #game-wait{
     font-size: 400%;
     fill: url(#title-fill);
     stroke: black;
 }
+
+#game-start,  #game-wait{
+    font-size: 70%;
+}
+#game-wait{
+    display: none;
+}
+
 #game-over text {
     font-size: 120%;
     fill: url(#game-over-fill);
@@ -83,8 +103,15 @@ canvas, #counter, #game-start, #game-over, #score, #score2, #description{
     display: block;
     width: 800px; 
 }
-#game-start, #game-over {
-    width: 400px;
+#game-start{
+    width: 500px;
+    height: 80px;
+}
+
+#game-wait{
+    left: 250px;
+    width: 300px;
+    height: 60px;
 }
 
 #description{
@@ -96,11 +123,20 @@ canvas, #counter, #game-start, #game-over, #score, #score2, #description{
     z-index: 1;
 }
 #game-over{
-    height: 300px;
+    width: 600px;
+    height: 500px;
 }
 #description text {
     font-size: 150%;
     fill: url(#description-fill);
     text-anchor: start;
     z-index: 2;
+}
+#ranking-title{
+    font-size: 300%;
+}
+
+#signout-button{
+    font-size: 200%;
+    fill: rgb(255, 255, 255);
 }

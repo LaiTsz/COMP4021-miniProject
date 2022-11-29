@@ -96,14 +96,19 @@ const UserPanel = (function() {
         // Click event for the signout button
         $("#signout-button").on("click", () => {
             // Send a signout request
-            Authentication.signout(
-                () => {
-                    Socket.disconnect();
+            // Authentication.signout(
+            //     () => {
+            //         Socket.disconnect();
 
-                    hide();
-                    SignInForm.show();
-                }
-            );
+            //         hide();
+            //         $("#game-over").hide();
+            //         SignInForm.show();
+            //     }
+            // );
+            $("#game-over").hide();
+            $("#game-start").show();
+            Socket.replay();
+
         });
     };
 

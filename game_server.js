@@ -3,9 +3,9 @@ const bcrypt = require("bcrypt");
 const fs = require("fs");
 const session = require("express-session");
 const { json } = require("express");
-
 // Create the Express app
 const app = express();
+var numOfPlayer = 0;
 
 // Use the 'public' folder to serve static files
 app.use(express.static("public"));
@@ -20,6 +20,7 @@ const chatSession = session({
     saveUninitialized: false,
     rolling: true,
     cookie: { maxAge: 300000 }
+    //cookie: { maxAge: 0 }
 });
 app.use(chatSession);
 
@@ -195,6 +196,15 @@ io.on("connection",(socket)=>{
             }
     });
 
+    socket.on("replay",()=>{
+        numOfPlayer++;
+        if(numOfPlayer == 2){
+            numOfPlayer = 0;
+        //console.log(numOfPlayer);
+            io.emit('retry');
+        }
+    });
+
     socket.on("get users",()=>{
         //Send the online users to the browser
         socket.emit("users",JSON.stringify(onlineUsers));
@@ -223,9 +233,9 @@ io.on("connection",(socket)=>{
     });
     socket.on("add typing",()=>{
         const user = socket.request.session.user;
-        console.log(user);
+        //console.log(user);
         const name = user.name;
-        console.log(name)
+        //console.log(name)
         io.emit("add typing",name);
     })
     socket.on("score update",(score)=>{
@@ -249,33 +259,40 @@ io.on("connection",(socket)=>{
     socket.on("get Damage",()=>{
         socket.broadcast.emit('reduce client life');
     })
+
+    socket.on("color update",(color,nextMonster)=>{
+        socket.broadcast.emit('client color',color,nextMonster);
+    })
     socket.on("user score",(gems)=>{
         const scores = JSON.parse(fs.readFileSync("data/game.json"));
         const {name} = socket.request.session.user;
-        console.log(scores.score2);
+        //console.log(scores.score2);
 
         //for(var i =0;i<3;i++){
-            if(name == scores.username1 && gems > scores.score1){
+            if(name == scores.username1){
+                if(gems > scores.score1)
                 scores.score1 = gems;
             }
-            else if(name == scores.username2 && gems > scores.score2){
+            else if(name == scores.username2){
+                if(gems > scores.score2)
                 scores.score2 = gems;
             }
-            else if(name == scores.username3 && gems > scores.score3){
+            else if(name == scores.username3 ){
+                if(gems > scores.score3)
                 scores.score3 = gems;
             }
             else if(gems > scores.score1){
-                console.log("test1");
+                //console.log("test1");
                 scores.score1 = gems;
                 scores.username1 = name;
             }
             else if(gems > scores.score2){
-                console.log("test2");
+                //console.log("test2");
                 scores.score2 = gems;
                 scores.username2 = name;
             }
             else if(gems > scores.score3){
-                console.log("test3");
+                //console.log("test3");
                 scores.score3 = gems;
                 scores.username3 = name;
             }

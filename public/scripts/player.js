@@ -130,6 +130,10 @@ const Player = function(ctx, x, y, gameArea) {
         sprite.update(time);
     };
 
+    const resetPlayer = function(){
+        sprite.setXY(180,400);
+    };
+
 
     // The methods are returned as an object here.
     return {
@@ -144,6 +148,7 @@ const Player = function(ctx, x, y, gameArea) {
         draw: sprite.draw,
         getX: sprite.getX,
         getY: sprite.getY,
-        update: update
+        update: update,
+        resetPlayer: resetPlayer
     };
 };

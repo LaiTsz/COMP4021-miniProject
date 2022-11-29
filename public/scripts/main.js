@@ -1,4 +1,5 @@
 let clientScore=0;
+let gameStartTime = 0; 
 let clientX=0;
 let clientY=0;
 let coinX=0;
@@ -12,6 +13,19 @@ let bulletPos = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:
 let clientBulletPos=[{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
 let monsterPos = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
 let clientMonsterPos=[{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+var requestid;
+let bulletscount = 0;
+
+let scorePlayerOne = 0;
+let scorePlayerTwo = 0;
+let active = 0;
+let nextbullet = 0;
+let nextMonster = 0;
+let speedOfShoot = 1000;
+let timeToStart = 3;
+let noFirstBullet = 0;
+let textshow = 0;
+let   monsterKill = 0;
 
 const clientPos=(function(){
     const updateClientScore=function(score){
@@ -37,14 +51,94 @@ const clientPos=(function(){
     const reduceClientLife=function(){
         life_player2--;
     }
+    const updateColor=function(color,nextMonster){
+        monster[nextMonster].setColor(color);
+    }
+    const startTheGame=function(){
+        //gameStart();
+        //console.log("start the game");
+        $("#game-start").hide();
+        //gameStart();
+        
+clientScore=0;
+clientX=0;
+clientY=0;
+ coinX=0;
+ coinY=0;
+ life_player1 = 2;
+ life_player2 = 2;
+endGame = 0;
+ heartPos = [{x:0,y:0},{x:0,y:0}];
+ clientHeartPos=[{x:0,y:0},{x:0,y:0}];
+ bulletPos = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+ clientBulletPos=[{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+ monsterPos = [{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+ clientMonsterPos=[{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0},{x:0,y:0}];
+ gameStartTime = 0; 
+ textshow = 0;
+  bulletscount = 0;
+  monsterKill = 0;
 
-    return {updateClientPos,updateCoinPos,updateHeart,updateBullet,updateMonster,updateClientScore,reduceClientLife,};
+  scorePlayerOne = 0;
+  scorePlayerTwo = 0;
+  active = 0;
+  nextbullet = 0;
+  nextMonster = 0;
+  speedOfShoot = 1000;
+  timeToStart = 3;
+  noFirstBullet = 0;
+  $("#player1-score").text(0);
+  $("#player2-score").text(0);
+  context.clearRect(0, 0, cv.width, cv.height);
+  status_context.clearRect(0, 0, cvc.width, cvc.height);
+  right_context.clearRect(0, 0, cvcc.width, cvcc.height);
+
+  hearts[0].setXY(30,15);
+  hearts[1].setXY(60,15);
+  heartsClone[0].setXY(685,15);
+  heartsClone[1].setXY(715,15);
+
+  for(let i=0;i<10;i++){
+    if(i<1){
+        player.resetPlayer();
+        player.draw();
+
+        //monster[0].update(now);
+        coin.resetCoin();
+        coin.draw();
+    }
+    if(i<4){
+        if(i<2){
+            //hearts[i].resetHeart();
+            hearts[i].draw();}
+    }
+    if(i<8){
+        bullets[i].resetBullet();
+        bullets[i].draw();
+    }
+    monsters[i].resetMonster();
+    monster[i].resetMonster();
+    monsters[i].draw();
+    monster[i].draw();
+}
+
+sounds.background.play();
+sounds.plane.play();
+sounds.background.currentTime = 0
+  requestAnimationFrame(doFrame);
+//   doFrame();
+    }
+
+    return {updateClientPos,updateCoinPos,updateHeart,updateBullet,updateMonster,updateClientScore,reduceClientLife,updateColor,startTheGame};
 })();
     
     // Socket value
         function passValue(now){
             if(now != 404)
-                monster[nextMonster].setColor(monsters[nextMonster].getColor());
+                {
+                    // monster[nextMonster].setColor(monsters[nextMonster].getColor());
+                    Socket.colorUpdate(monsters[nextMonster].getColor(),now);
+                }
             else{
                 Socket.scoreUpdate(scorePlayerOne);
                 Socket.heartPositionUpdate(heartPos);
@@ -116,14 +210,13 @@ const clientPos=(function(){
 
         const totalGameTime = 60;   // Total game time in seconds
         const gemMaxAge = 3000;     // The maximum age of the gems in milliseconds
-        let gameStartTime = 0;      // The timestamp when the game starts
+     // The timestamp when the game starts
         let collectedGems = 0;      // The number of gems collected in the game
         
 
 
         /* Create the game area */
         const gameArea = BoundingBox(context, 60, 30, 600, 360);
-
         const gameAreaOfPlayer = BoundingBox(context, 100, 45, 570, 315);
         const gameAreaOfCoin = BoundingBox(context, 100, 45, 210, 340);
         const gameAreatest = BoundingBox(context, 60, 30, 570, 330);
@@ -171,16 +264,16 @@ const clientPos=(function(){
         Bullet(context, -300, 200, gameAreabullet)];
 
         const monsters = [
-        Monster(context, -200, 340, "green", gameAreabullet),
-        Monster(context, -200, 300, "green", gameAreabullet),
-        Monster(context, -200, 300, "green", gameAreabullet),
-        Monster(context, -200, 300, "green", gameAreabullet),
-        Monster(context, -200, 300, "green", gameAreabullet),
-        Monster(context, -200, 240, "green", gameAreabullet),
-        Monster(context, -200, 240, "green", gameAreabullet),
-        Monster(context, -200, 240, "green", gameAreabullet),
-        Monster(context, -200, 240, "green", gameAreabullet),
-        Monster(context, -200, 240, "green", gameAreabullet)];
+        Monster(context, -200, -340, "none", gameAreabullet),
+        Monster(context, -200, -300, "none", gameAreabullet),
+        Monster(context, -200, -300, "none", gameAreabullet),
+        Monster(context, -200, -300, "none", gameAreabullet),
+        Monster(context, -200, -300, "none", gameAreabullet),
+        Monster(context, -200, -240, "none", gameAreabullet),
+        Monster(context, -200, -240, "none", gameAreabullet),
+        Monster(context, -200, -240, "none", gameAreabullet),
+        Monster(context, -200, -240, "none", gameAreabullet),
+        Monster(context, -200, -240, "none", gameAreabullet)];
 
         const heartsClone = [
             Heart(status_context, 685, 15),
@@ -203,33 +296,19 @@ const clientPos=(function(){
             Bullet(right_context, -300, 200, gameAreabullett)];
         
             const monstersClone = [
-            Monster(right_context -200, 340, "green", gameAreabullett),
-            Monster(right_context, -200, 300, "green", gameAreabullett),
-            Monster(right_context, -200, 300, "green", gameAreabullett),
-            Monster(right_context, -200, 300, "green", gameAreabullett),
-            Monster(right_context, -200, 300, "green", gameAreabullett),
-            Monster(right_context, -200, 240, "green", gameAreabullett),
-            Monster(right_context, -200, 240, "green", gameAreabullett),
-            Monster(right_context, -200, 240, "green", gameAreabullett),
-            Monster(right_context, -200, 240, "green", gameAreabullett),
-            Monster(right_context, -200, 240, "green", gameAreabullett)];
+            Monster(right_context -2000, 340, "none", gameAreabullett),
+            Monster(right_context, -2000, 300, "none", gameAreabullett),
+            Monster(right_context, -2000, 300, "none", gameAreabullett),
+            Monster(right_context, -2000, 300, "none", gameAreabullett),
+            Monster(right_context, -2000, 300, "none", gameAreabullett),
+            Monster(right_context, -2000, 240, "none", gameAreabullett),
+            Monster(right_context, -2000, 240, "none", gameAreabullett),
+            Monster(right_context, -2000, 240, "none", gameAreabullett),
+            Monster(right_context, -2000, 240, "none", gameAreabullett),
+            Monster(right_context, -2000, 240, "none", gameAreabullett)];
         
             const playerClone = Player(right_context, 180, 400, gameAreaOfPlayerr);
             const coinClone = Coin(right_context,-400,-400,"coin");
-
-
-
-        let bulletscount = 0;
-
-    let scorePlayerOne = 0;
-    let scorePlayerTwo = 0;
-    let active = 0;
-    let nextbullet = 0;
-    let nextMonster = 0;
-    let speedOfShoot = 1000;
-    let timeToStart = 3;
-    let noFirstBullet = 0;
-    
 
     function setBulletFromPlayer(now){
         if(noFirstBullet == 0)
@@ -243,10 +322,11 @@ const clientPos=(function(){
             nextbullet += 1;
             if(nextbullet == 8)
                 nextbullet = 0;
-            if(endGame == 0){
+
                 //console.log(speedOfShoot);
+                if(endGame == 0)
                 setTimeout(setBulletFromPlayer, speedOfShoot);
-            }
+            
     }
 
     function delayOfSpawn(now){
@@ -256,11 +336,12 @@ const clientPos=(function(){
         nextMonster += 1;
         if(nextMonster == 10)
             nextMonster = 0;
-        if(endGame == 0)
+            if(endGame == 0)
             setTimeout(delayOfSpawn, 400);
     }
     function delayOfSpawnCoin(now){
         coin.randomize(gameAreaOfCoin);
+        if(endGame == 0)
         setTimeout(delayOfSpawnCoin,(Math.floor(Math.random() * 3))*6000);
         
     }
@@ -268,17 +349,15 @@ const clientPos=(function(){
         /* The main processing of the game */
         function doFrame(now) {
 
-
             //console.log(monstersClone[0].getX());
 
             if (gameStartTime == 0) gameStartTime = now;
 
-            if(endGame == 1){
-                return;
-            }
+            //console.log(gameStartTime);
             /* Update the time remaining */
             const gameTimeSoFar = now - gameStartTime;
             const timeRemaining = Math.ceil((totalGameTime * 1000 - gameTimeSoFar) / 1000);
+
             $("#time-remaining").text(timeRemaining);
 
             if (coin.getAge(now) > gemMaxAge)
@@ -286,6 +365,7 @@ const clientPos=(function(){
             /* TODO */
             /* Handle the game over situation here */
             if (timeRemaining <= 0){
+                $("#game-wait").hide();
                 endGame=1;
                 Socket.scoreRanking(collectedGems);
                 for(let i = 0;i<2;i++){
@@ -297,17 +377,23 @@ const clientPos=(function(){
                     heartsClone[i].draw();
                 }
                 if(scorePlayerOne < clientScore){
-                    Socket.scoreRanking(collectedGems);
-                    $("#final-gems").text("You lose and you collect "+scorePlayerOne+ " scores");
+                    Socket.scoreRanking(scorePlayerOne);
+                    $("#final-gems").text("You have "+scorePlayerOne+ " scores");
+                    $("#lifee").text("Your remaining life is "+life_player1);
+                    $("#killmonster").text("You killed "+monsterKill+ " monster(s)");
                     $("#game-over").show();
                     
                 }else if(scorePlayerOne == clientScore){
-                    Socket.scoreRanking(collectedGems);
-                    $("#final-gems").text("Draw! you collect "+scorePlayerOne+ " scores");
+                    Socket.scoreRanking(scorePlayerOne);
+                    $("#final-gems").text("You have "+scorePlayerOne+ " scores");
+                    $("#lifee").text("Your remaining life is "+life_player1);
+                    $("#killmonster").text("You killed "+monsterKill+ " monster(s)");
                     $("#game-over").show();
                 }else{
-                    Socket.scoreRanking(collectedGems);
-                    $("#final-gems").text("You win and you collect "+scorePlayerOne+ " scores");
+                    Socket.scoreRanking(scorePlayerOne);
+                    $("#final-gems").text("You have "+scorePlayerOne+ " scores");
+                    $("#lifee").text("Your remaining life is "+life_player1);
+                    $("#killmonster").text("You killed "+monsterKill+ " monster(s)");
                     $("#game-over").show();
                 }
                 sounds.plane.pause();
@@ -344,37 +430,7 @@ const clientPos=(function(){
                 monsters[i].update(now);
                 monster[i].update(now);
             }
-
-            // for(let i = 0;i<10;i++){
-            //     if(i<1){
-            //         playerClone.setXY(player.getX(),player.getY());
-            //         coinClone.setXY(coin.getX(),coin.getY());
-            //     }
-            //     if(i<4){
-            //         if(i<2){
-            //             heartsClone[i].setXY(hearts[i].getX()+655,hearts[i].getY());
-            //         }
-
-            //     }
-            //     if(i<8){
-            //         bulletsClone[i].setXY(bullets[i].getX(),bullets[i].getY());
-            //     }
-            //     if(monsters[i].getColor()=="purple" ||
-            //     monsters[i].getColor()=="red" ||
-            //     monsters[i].getColor()=="green" ||
-            //     monsters[i].getColor()=="yellow" ||
-            //     monsters[i].getColor()=="blue" ||
-            //     monsters[i].getColor()=="orange" ||
-            //     monsters[i].getColor()=="skyblue" ||
-            //     monsters[i].getColor()=="gray" ){
-            //         //console.log(monsters[i].getColor());
-            //         monster[i].setColor(monsters[i].getColor());
-            //     }
-                    
-            //         monster[i].setXY(monsters[i].getX(),monsters[i].getY());
-            // }
             passValue(404);
-
 
             for(let i=0;i<10;i++){ //update clone
                 if(i<1){
@@ -454,6 +510,7 @@ const clientPos=(function(){
                     }
                 for(let y = 0;y<8;y++){
                     if (monstersboxs[i].isPointInBox(bulletx[y],bullety[y])) {
+                        monsterKill++;
                         scorePlayerOne++;
                         $("#player1-score").text(scorePlayerOne);
                         collectedGems++;
@@ -468,7 +525,8 @@ const clientPos=(function(){
             }
             if(life_player1 == 1)
                 hearts[1].resetHeart();
-            if(life_player1 <= 0 ||life_player2<=0) {
+            if(life_player1 <= 0 && life_player2<=0) {
+                $("#game-wait").hide();
                 endGame = 1;
             
                 for(let i = 0;i<2;i++){
@@ -480,13 +538,17 @@ const clientPos=(function(){
                     heartsClone[i].draw();
                 } 
                 if(life_player1 <= 0){
-                    Socket.scoreRanking(collectedGems);
-                    $("#final-gems").text("You lose and you collect "+scorePlayerOne+ " scores");
+                    Socket.scoreRanking(scorePlayerOne);
+                    $("#final-gems").text("You have "+scorePlayerOne+ " scores");
+                    $("#lifee").text("Your remaining life is "+life_player1);
+                    $("#killmonster").text("You killed "+monsterKill+ " monster(s)");
                     $("#game-over").show();
                     
                 }else{
-                    Socket.scoreRanking(collectedGems);
-                    $("#final-gems").text("You win and you collect "+scorePlayerOne+ " scores");
+                    Socket.scoreRanking(scorePlayerOne);
+                    $("#final-gems").text("You have "+scorePlayerOne+ " scores");
+                    $("#lifee").text("Your remaining life is "+life_player1);
+                    $("#killmonster").text("You killed "+monsterKill+ " monster(s)");
                     $("#game-over").show();
                 }
                 
@@ -495,7 +557,46 @@ const clientPos=(function(){
                 sounds.fire.pause();
                 sounds.collect.pause();
                 sounds.gameover.play();
-                console.log("END")
+                //console.log("END")
+            }
+            else if(life_player1 <= 0){
+                sounds.fire.pause();
+                sounds.plane.pause();
+                for(let i = 0;i<2;i++){
+                    hearts[i].resetHeart();
+                    heartsClone[i].resetHeart();
+                    hearts[i].update(now);
+                    heartsClone[i].update(now);
+                    hearts[i].draw();
+                    heartsClone[i].draw();
+                } 
+                for(let i=0;i<10;i++){
+                    if(i<1){
+                        player.setXY(2000,2000);
+                        player.draw();
+                
+                        //monster[0].update(now);
+                        coin.resetCoin();
+                        coin.draw();
+                    }
+                    if(i<4){
+                        if(i<2){
+                            hearts[i].resetHeart();
+                            hearts[i].draw();}
+                    }
+                    if(i<8){
+                        bullets[i].resetBullet();
+                        bullets[i].draw();
+                    }
+                    monsters[i].resetMonster();
+                    monsters[i].draw();
+                }
+                if(textshow == 0){
+                    console.log("test");
+                    textshow = 1;
+                    $("#game-wait").show();
+                }
+                
             }
 
             /* Clear the screen */
@@ -509,7 +610,7 @@ const clientPos=(function(){
 
 
 
-            for(let i = 0;i<10;i++){
+           for(let i = 0;i<10;i++){
                 if(i<1){
                     monster[0].draw();
                     player.draw();
@@ -525,7 +626,11 @@ const clientPos=(function(){
                 }
                 monsters[i].draw();
             }
-
+            blackholesClone[0].draw();
+            blackholesClone[1].draw();
+            blackholesClone[2].draw();
+            blackholesClone[3].draw();
+if(life_player2 > 0){
             for(let i = 0;i<10;i++){
                 if(i<1){
                     playerClone.draw();
@@ -541,12 +646,15 @@ const clientPos=(function(){
                 }
                 monster[i].draw();
             }
-
-            if(life_player1 == 0) 
-                return;
+        }
+            if(endGame == 0){
+                requestAnimationFrame(doFrame);
+            }
+            // if(life_player1 == 0) 
+            //     cancelAnimationFrame(requestid);
 
             /* Process the next frame */
-            requestAnimationFrame(doFrame);
+            // requestAnimationFrame(doFrame);
         }
 
         /* Handle the start of the game */
@@ -606,7 +714,7 @@ const clientPos=(function(){
             gem.randomize(gameArea);
 
             /* Start the game */
-            requestAnimationFrame(doFrame);
+            requestid = requestAnimationFrame(doFrame);
         };
     
 
@@ -616,6 +724,7 @@ const clientPos=(function(){
     Authentication.validate(
         () => {
             SignInForm.hide();
+            $("#game-wait").hide();
             console.log("sign in success");
             Socket.connect();
         },
