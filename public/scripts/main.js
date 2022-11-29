@@ -37,10 +37,8 @@ const clientPos=(function(){
     const reduceClientLife=function(){
         life_player2--;
     }
-    const rankingData=function(array){
-        life_player2--;
-    }
-    return {updateClientPos,updateCoinPos,updateHeart,updateBullet,updateMonster,updateClientScore,reduceClientLife,rankingData};
+
+    return {updateClientPos,updateCoinPos,updateHeart,updateBullet,updateMonster,updateClientScore,reduceClientLife,};
 })();
     
     // Socket value
@@ -298,8 +296,20 @@ const clientPos=(function(){
                     hearts[i].draw();
                     heartsClone[i].draw();
                 }
-                $("#final-gems").text(collectedGems);
-                $("#game-over").show();
+                if(scorePlayerOne < clientScore){
+                    Socket.scoreRanking(collectedGems);
+                    $("#final-gems").text("You lose and you collect "+scorePlayerOne+ " scores");
+                    $("#game-over").show();
+                    
+                }else if(scorePlayerOne == clientScore){
+                    Socket.scoreRanking(collectedGems);
+                    $("#final-gems").text("Draw! you collect "+scorePlayerOne+ " scores");
+                    $("#game-over").show();
+                }else{
+                    Socket.scoreRanking(collectedGems);
+                    $("#final-gems").text("You win and you collect "+scorePlayerOne+ " scores");
+                    $("#game-over").show();
+                }
                 sounds.plane.pause();
                 sounds.background.pause();
                 sounds.fire.pause();
